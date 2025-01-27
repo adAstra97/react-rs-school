@@ -1,35 +1,75 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import { Component } from 'react';
+import { CardList, ErrorBoundary, ErrorButton, Search } from './components';
 
-function App() {
-  const [count, setCount] = useState(0);
+const mockData = [
+  {
+    id: 1,
+    name: 'Product A',
+    description: 'Description of Product A',
+  },
+  {
+    id: 2,
+    name: 'Product B',
+    description: 'Description of Product B',
+  },
+  {
+    id: 3,
+    name: 'Product C',
+    description: 'Description of Product C',
+  },
+  {
+    id: 4,
+    name: 'Product D',
+    description: 'Description of Product D',
+  },
+  {
+    id: 5,
+    name: 'Product E',
+    description: 'Description of Product E',
+  },
+  {
+    id: 6,
+    name: 'Product F',
+    description: 'Description of Product F',
+  },
+  {
+    id: 7,
+    name: 'Product G',
+    description: 'Description of Product G',
+  },
+  {
+    id: 8,
+    name: 'Product H',
+    description: 'Description of Product H',
+  },
+  {
+    id: 9,
+    name: 'Product I',
+    description: 'Description of Product I',
+  },
+  {
+    id: 10,
+    name: 'Product J',
+    description: 'Description of Product J',
+  },
+];
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+class App extends Component {
+  render() {
+    return (
+      <ErrorBoundary>
+        <div className="app">
+          <header className="app__header">
+            <Search />
+          </header>
+          <main className="app__content">
+            <CardList items={mockData} />
+            <ErrorButton />
+          </main>
+        </div>
+      </ErrorBoundary>
+    );
+  }
 }
 
 export default App;
