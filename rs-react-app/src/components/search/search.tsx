@@ -1,11 +1,39 @@
 import { Component } from 'react';
 
-class Search extends Component {
+interface SearchProps {
+  onSearch: (query: string) => void;
+}
+
+interface SearchState {
+  searchQuery: string;
+}
+
+class Search extends Component<SearchProps, SearchState> {
+  savedSearchQuery = localStorage.getItem('saved-search-query') || '';
+  state = { searchQuery: this.savedSearchQuery };
+
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    this.setState({ searchQuery: event.target.value });
+  };
+
+  handleSearch = (): void => {
+    const { searchQuery } = this.state;
+    this.props.onSearch(searchQuery);
+    localStorage.setItem('saved-search-query', searchQuery);
+  };
+
   render() {
     return (
       <div>
-        <input type="text" placeholder="Search..." />
-        <button>Search</button>
+        <input
+          type="text"
+          value={this.state.searchQuery}
+          placeholder="Search..."
+          onChange={this.handleChange}
+        />
+        <button type="button" onClick={this.handleSearch}>
+          Search
+        </button>
       </div>
     );
   }

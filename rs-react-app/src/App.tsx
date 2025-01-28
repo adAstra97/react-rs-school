@@ -1,71 +1,58 @@
 import { Component } from 'react';
 import { CardList, ErrorBoundary, ErrorButton, Search } from './components';
+import { Character } from './shared/types/character.interface';
+import { CharacterService } from './services/character.service';
 
-const mockData = [
-  {
-    id: 1,
-    name: 'Product A',
-    description: 'Description of Product A',
-  },
-  {
-    id: 2,
-    name: 'Product B',
-    description: 'Description of Product B',
-  },
-  {
-    id: 3,
-    name: 'Product C',
-    description: 'Description of Product C',
-  },
-  {
-    id: 4,
-    name: 'Product D',
-    description: 'Description of Product D',
-  },
-  {
-    id: 5,
-    name: 'Product E',
-    description: 'Description of Product E',
-  },
-  {
-    id: 6,
-    name: 'Product F',
-    description: 'Description of Product F',
-  },
-  {
-    id: 7,
-    name: 'Product G',
-    description: 'Description of Product G',
-  },
-  {
-    id: 8,
-    name: 'Product H',
-    description: 'Description of Product H',
-  },
-  {
-    id: 9,
-    name: 'Product I',
-    description: 'Description of Product I',
-  },
-  {
-    id: 10,
-    name: 'Product J',
-    description: 'Description of Product J',
-  },
-];
+interface AppState {
+  items: Character[];
+  isLoading: boolean;
+  error: string | null;
+}
 
-class App extends Component {
+class App extends Component<unknown, AppState> {
+  state = {
+    items: [],
+    isLoading: false,
+    error: null,
+  };
+
+  componentDidMount() {
+    const savedSearchQuery = localStorage.getItem('saved-search-query') || '';
+    this.searchCaracters(savedSearchQuery);
+  }
+
+  searchCaracters = async (query: string) => {
+    this.setState({ isLoading: true, error: null });
+
+    try {
+      const {
+        data: { results },
+      } = await CharacterService.getAllCaracters(query);
+      console.log(results);
+      this.setState({ items: results });
+    } catch (error) {
+      console.error('Error fetching characters:', error);
+      this.setState({ error: 'Failed to fetch characters.' });
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  };
+
   render() {
+    const { items, error, isLoading } = this.state;
+
     return (
       <ErrorBoundary>
         <div className="app">
           <header className="app__header">
-            <Search />
+            <Search onSearch={this.searchCaracters} />
           </header>
           <main className="app__content">
-            <CardList items={mockData} />
-            <ErrorButton />
+            {isLoading && <p>Loading...</p>}
+            {error && <p>{error}</p>}
+            <CardList items={items} />
           </main>
+          <ErrorButton />
         </div>
       </ErrorBoundary>
     );

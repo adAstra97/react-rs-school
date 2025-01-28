@@ -1,8 +1,9 @@
 import { Component } from 'react';
 import Card from '../card/card';
+import { Character } from '../../shared/types/character.interface';
 
 interface CardListProps {
-  items: { id: number; name: string; description: string }[];
+  items: Character[];
 }
 
 class CardList extends Component<CardListProps> {
@@ -10,7 +11,7 @@ class CardList extends Component<CardListProps> {
     return (
       <div>
         {this.props.items.map((item) => (
-          <Card key={item.id} {...item} />
+          <Card key={item.id} card={item} />
         ))}
       </div>
     );

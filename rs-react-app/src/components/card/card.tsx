@@ -1,19 +1,18 @@
 import { Component } from 'react';
+import { Character } from '../../shared/types/character.interface';
 
 interface CardProps {
-  id: number;
-  name: string;
-  description: string;
+  card: Character;
 }
 
 class Card extends Component<CardProps> {
   render() {
-    const { name, description } = this.props;
+    const { name, image } = this.props.card;
 
     return (
       <div>
         <h3>{name}</h3>
-        <p>{description}</p>
+        <p>{image}</p>
       </div>
     );
   }
