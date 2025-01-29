@@ -21,16 +21,16 @@ class App extends Component<unknown, AppState> {
 
   componentDidMount() {
     const savedSearchQuery = localStorage.getItem('saved-search-query') || '';
-    this.searchCaracters(savedSearchQuery);
+    this.searchCharacters(savedSearchQuery);
   }
 
-  searchCaracters = async (query: string) => {
+  searchCharacters = async (query: string) => {
     this.setState({ isLoading: true, error: null });
 
     try {
       const {
         data: { results },
-      } = await CharacterService.getAllCaracters(query);
+      } = await CharacterService.getAllCharacters(query);
 
       this.setState({ items: results });
     } catch (error) {
@@ -52,7 +52,7 @@ class App extends Component<unknown, AppState> {
     return (
       <div className="app">
         <header className="app__header">
-          <Search onSearch={this.searchCaracters} />
+          <Search onSearch={this.searchCharacters} />
         </header>
         <main className="app__content">
           {isLoading && (
@@ -61,7 +61,7 @@ class App extends Component<unknown, AppState> {
             </div>
           )}
           {error && <p>{error}</p>}
-          <CardList items={items} />
+          {!isLoading && !error && <CardList items={items} />}
         </main>
         <ErrorButton />
       </div>
