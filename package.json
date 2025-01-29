@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "format:fix": "prettier --write .",
+    "format:fix": "prettier -l --write .",
     "prepare": "husky && chmod ug+x .husky/*"
   },
   "dependencies": {

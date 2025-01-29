@@ -18,8 +18,10 @@ class Search extends Component<SearchProps, SearchState> {
 
   handleSearch = (): void => {
     const { searchQuery } = this.state;
-    this.props.onSearch(searchQuery);
-    localStorage.setItem('saved-search-query', searchQuery);
+    const trimmedQuery = searchQuery.trim();
+
+    this.props.onSearch(trimmedQuery);
+    localStorage.setItem('saved-search-query', trimmedQuery);
   };
 
   render() {

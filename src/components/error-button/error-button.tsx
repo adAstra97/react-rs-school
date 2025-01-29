@@ -1,9 +1,23 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 
-class ErrorButton extends Component {
-  render() {
+interface ErrorButtonState {
+  hasError: boolean;
+}
+
+class ErrorButton extends Component<unknown, ErrorButtonState> {
+  state = { hasError: false };
+
+  throwError = () => {
+    this.setState({ hasError: true });
+  };
+
+  render(): ReactNode {
+    if (this.state.hasError) {
+      throw new Error('An error occurred');
+    }
+
     return (
-      <button type="button" className="button--error">
+      <button type="button" onClick={this.throwError} className="button--error">
         Throw Error
       </button>
     );

@@ -1,7 +1,10 @@
 import { Component } from 'react';
-import { CardList, ErrorBoundary, ErrorButton, Search } from './components';
+import { CardList, ErrorButton, Search } from './components';
 import { Character } from './shared/types/character.interface';
 import { CharacterService } from './services/character.service';
+import spinner from '/spinner.svg';
+import { AxiosError } from 'axios';
+import { GENERIC_ERROR_MESSAGE } from './shared/constants';
 
 interface AppState {
   items: Character[];
@@ -28,11 +31,16 @@ class App extends Component<unknown, AppState> {
       const {
         data: { results },
       } = await CharacterService.getAllCaracters(query);
-      console.log(results);
+
       this.setState({ items: results });
     } catch (error) {
-      console.error('Error fetching characters:', error);
-      this.setState({ error: 'Failed to fetch characters.' });
+      if (error instanceof AxiosError) {
+        this.setState({
+          error: error.response?.data?.error || GENERIC_ERROR_MESSAGE,
+        });
+      } else {
+        this.setState({ error: GENERIC_ERROR_MESSAGE });
+      }
     } finally {
       this.setState({ isLoading: false });
     }
@@ -42,19 +50,21 @@ class App extends Component<unknown, AppState> {
     const { items, error, isLoading } = this.state;
 
     return (
-      <ErrorBoundary>
-        <div className="app">
-          <header className="app__header">
-            <Search onSearch={this.searchCaracters} />
-          </header>
-          <main className="app__content">
-            {isLoading && <p>Loading...</p>}
-            {error && <p>{error}</p>}
-            <CardList items={items} />
-          </main>
-          <ErrorButton />
-        </div>
-      </ErrorBoundary>
+      <div className="app">
+        <header className="app__header">
+          <Search onSearch={this.searchCaracters} />
+        </header>
+        <main className="app__content">
+          {isLoading && (
+            <div className="spinner">
+              <img src={spinner} alt="loading" />
+            </div>
+          )}
+          {error && <p>{error}</p>}
+          <CardList items={items} />
+        </main>
+        <ErrorButton />
+      </div>
     );
   }
 }
