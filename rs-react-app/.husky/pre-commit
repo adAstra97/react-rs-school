@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-cd rs-react-app
-npm run lint
