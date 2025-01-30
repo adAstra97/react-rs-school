@@ -9,7 +9,7 @@ interface CardListProps {
 class CardList extends Component<CardListProps> {
   render() {
     return (
-      <div>
+      <div className="my-5 h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto gap-2 flex flex-wrap justify-center">
         {this.props.items.map((item) => (
           <Card key={item.id} card={item} />
         ))}

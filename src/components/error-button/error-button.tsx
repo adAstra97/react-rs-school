@@ -17,7 +17,11 @@ class ErrorButton extends Component<unknown, ErrorButtonState> {
     }
 
     return (
-      <button type="button" onClick={this.throwError} className="button--error">
+      <button
+        type="button"
+        onClick={this.throwError}
+        className="fixed right-10 bottom-10 text-lg"
+      >
         Throw Error
       </button>
     );

@@ -4,6 +4,7 @@ import { Character } from './shared/types/character.interface';
 import { CharacterService } from './services/character.service';
 import Spinner from './components/spinner/spinner';
 import { handleError } from './utils/handle-error';
+import ErrorBlock from './components/error-block/error-block';
 
 interface AppState {
   items: Character[];
@@ -47,13 +48,13 @@ class App extends Component<unknown, AppState> {
     const { items, error, isLoading } = this.state;
 
     return (
-      <div className="max-w">
-        <header className="app__header">
+      <div className="mx-auto">
+        <header className="border-b-amber-500 border-b-2 py-5">
           <Search onSearch={this.searchCharacters} />
         </header>
-        <main className="app__content">
+        <main className="max-w-[1280px] w-[calc(100vw-50px)] mx-auto">
           {isLoading && <Spinner />}
-          {error && <p>{error}</p>}
+          {error && <ErrorBlock errorText={error} />}
           {!isLoading && !error && <CardList items={items} />}
         </main>
         <ErrorButton />
