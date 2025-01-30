@@ -12,11 +12,11 @@ class Search extends Component<SearchProps, SearchState> {
   savedSearchQuery = localStorage.getItem('saved-search-query') || '';
   state = { searchQuery: this.savedSearchQuery };
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ searchQuery: event.target.value });
   };
 
-  handleSearch = (): void => {
+  handleSearch = () => {
     const { searchQuery } = this.state;
     const trimmedQuery = searchQuery.trim();
 

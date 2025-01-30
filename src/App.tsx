@@ -50,7 +50,7 @@ class App extends Component<unknown, AppState> {
     const { items, error, isLoading } = this.state;
 
     return (
-      <div className="app">
+      <div className="">
         <header className="app__header">
           <Search onSearch={this.searchCharacters} />
         </header>

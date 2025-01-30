@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react';
+import { Component } from 'react';
 
 interface ErrorButtonState {
   hasError: boolean;
@@ -11,7 +11,7 @@ class ErrorButton extends Component<unknown, ErrorButtonState> {
     this.setState({ hasError: true });
   };
 
-  render(): ReactNode {
+  render() {
     if (this.state.hasError) {
       throw new Error('An error occurred');
     }
