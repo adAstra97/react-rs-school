@@ -2,9 +2,8 @@ import { Component } from 'react';
 import { CardList, ErrorButton, Search } from './components';
 import { Character } from './shared/types/character.interface';
 import { CharacterService } from './services/character.service';
-import spinner from '/spinner.svg';
-import { AxiosError } from 'axios';
-import { GENERIC_ERROR_MESSAGE } from './shared/constants';
+import Spinner from './components/spinner/spinner';
+import { handleError } from './utils/handle-error';
 
 interface AppState {
   items: Character[];
@@ -13,16 +12,20 @@ interface AppState {
 }
 
 class App extends Component<unknown, AppState> {
-  state = {
+  state: AppState = {
     items: [],
     isLoading: false,
     error: null,
   };
 
   componentDidMount() {
+    this.loadInitialData();
+  }
+
+  loadInitialData = () => {
     const savedSearchQuery = localStorage.getItem('saved-search-query') || '';
     this.searchCharacters(savedSearchQuery);
-  }
+  };
 
   searchCharacters = async (query: string) => {
     this.setState({ isLoading: true, error: null });
@@ -34,13 +37,7 @@ class App extends Component<unknown, AppState> {
 
       this.setState({ items: results });
     } catch (error) {
-      if (error instanceof AxiosError) {
-        this.setState({
-          error: error.response?.data?.error || GENERIC_ERROR_MESSAGE,
-        });
-      } else {
-        this.setState({ error: GENERIC_ERROR_MESSAGE });
-      }
+      this.setState({ error: handleError(error) });
     } finally {
       this.setState({ isLoading: false });
     }
@@ -50,16 +47,12 @@ class App extends Component<unknown, AppState> {
     const { items, error, isLoading } = this.state;
 
     return (
-      <div className="">
+      <div className="max-w">
         <header className="app__header">
           <Search onSearch={this.searchCharacters} />
         </header>
         <main className="app__content">
-          {isLoading && (
-            <div className="spinner">
-              <img src={spinner} alt="loading" />
-            </div>
-          )}
+          {isLoading && <Spinner />}
           {error && <p>{error}</p>}
           {!isLoading && !error && <CardList items={items} />}
         </main>
