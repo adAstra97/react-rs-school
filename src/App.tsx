@@ -1,10 +1,14 @@
 import { Component } from 'react';
-import { CardList, ErrorButton, Search } from './components';
+import {
+  CardList,
+  ErrorBlock,
+  ErrorButton,
+  Search,
+  Spinner,
+} from './components';
 import { Character } from './shared/types/character.interface';
 import { CharacterService } from './services/character.service';
-import Spinner from './components/spinner/spinner';
 import { handleError } from './utils/handle-error';
-import ErrorBlock from './components/error-block/error-block';
 
 interface AppState {
   items: Character[];

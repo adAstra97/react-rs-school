@@ -16,14 +16,19 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.log(error, info);
+    console.error(error, info);
   }
+
+  handleHideError = () => {
+    this.setState({ hasError: false });
+  };
 
   render() {
     if (this.state.hasError) {
       return (
-        <div>
+        <div className="h-screen flex flex-col gap-5 justify-center text-center items-center p-6">
           <h2>Something went wrong. Please try again later.</h2>
+          <button onClick={this.handleHideError}>Hide Error</button>
         </div>
       );
     }

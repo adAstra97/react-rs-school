@@ -5,7 +5,7 @@ class Spinner extends Component {
   render() {
     return (
       <div className="absolute flex justify-center items-center inset-0 bg-[rgba(0,0,0,0.50)]">
-        <SpinnerIcon />
+        <img src={SpinnerIcon} alt="loading" />
       </div>
     );
   }

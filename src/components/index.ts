@@ -3,3 +3,5 @@ export { default as CardList } from './card-list/card-list.tsx';
 export { default as Card } from './card/card.tsx';
 export { default as ErrorButton } from './error-button/error-button.tsx';
 export { default as ErrorBoundary } from './error-boundary/error-boundary.tsx';
+export { default as ErrorBlock } from './error-block/error-block.tsx';
+export { default as Spinner } from './spinner/spinner.tsx';
