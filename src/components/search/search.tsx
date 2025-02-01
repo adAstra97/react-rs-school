@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 interface SearchProps {
+  searchQuery: string;
   onSearch: (query: string) => void;
 }
 
@@ -9,8 +10,7 @@ interface SearchState {
 }
 
 class Search extends Component<SearchProps, SearchState> {
-  savedSearchQuery = localStorage.getItem('saved-search-query') || '';
-  state = { searchQuery: this.savedSearchQuery };
+  state = { searchQuery: this.props.searchQuery };
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ searchQuery: event.target.value });

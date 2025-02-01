@@ -12,6 +12,7 @@ import { handleError } from './utils/handle-error';
 
 interface AppState {
   items: Character[];
+  searchQuery: string;
   isLoading: boolean;
   error: string | null;
 }
@@ -19,6 +20,7 @@ interface AppState {
 class App extends Component<unknown, AppState> {
   state: AppState = {
     items: [],
+    searchQuery: localStorage.getItem('saved-search-query') || '',
     isLoading: false,
     error: null,
   };
@@ -28,8 +30,7 @@ class App extends Component<unknown, AppState> {
   }
 
   loadInitialData = () => {
-    const savedSearchQuery = localStorage.getItem('saved-search-query') || '';
-    this.searchCharacters(savedSearchQuery);
+    this.searchCharacters(this.state.searchQuery);
   };
 
   searchCharacters = async (query: string) => {
@@ -49,12 +50,12 @@ class App extends Component<unknown, AppState> {
   };
 
   render() {
-    const { items, error, isLoading } = this.state;
+    const { items, searchQuery, error, isLoading } = this.state;
 
     return (
       <div className="mx-auto">
         <header className="border-b-amber-500 border-b-2 py-5">
-          <Search onSearch={this.searchCharacters} />
+          <Search searchQuery={searchQuery} onSearch={this.searchCharacters} />
         </header>
         <main className="max-w-[1280px] w-[calc(100vw-50px)] mx-auto">
           {isLoading && <Spinner />}
