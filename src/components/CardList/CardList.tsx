@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Character } from '../../shared/types/character.interface';
-import Card from '../card/card';
+import Card from '../Card/Card';
 
 interface CardListProps {
   items: Character[];

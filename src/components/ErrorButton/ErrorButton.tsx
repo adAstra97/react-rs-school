@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { FC, useState } from 'react';
 
-const ErrorButton = () => {
+const ErrorButton: FC = () => {
   const [hasError, setHasError] = useState(false);
 
   const throwError = () => {
