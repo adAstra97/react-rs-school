@@ -11,7 +11,6 @@ const Search: FC<SearchProps> = ({ searchQuery, onSearch }) => {
   const handleSearch = () => {
     const trimmedQuery = localQuery.trim();
     onSearch(trimmedQuery);
-    localStorage.setItem('saved-search-query', trimmedQuery);
   };
 
   return (

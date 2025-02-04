@@ -9,12 +9,13 @@ import {
 import { Character } from './shared/types/character.interface';
 import { CharacterService } from './services/character.service';
 import { handleError } from './utils/handle-error';
+import { useLocalStorage } from './hooks/use-local-storage';
 
 const App: FC = () => {
   const [items, setItems] = useState<Character[]>([]);
-  const [searchQuery, setSearchQuery] = useState(
-    localStorage.getItem('saved-search-query') || ''
-  );
+  const { value: searchQuery, setValue: setSearchQuery } =
+    useLocalStorage('saved-search-query');
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
