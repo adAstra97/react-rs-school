@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect, FC } from 'react';
 import {
   CardList,
   ErrorBlock,
@@ -10,62 +10,56 @@ import { Character } from './shared/types/character.interface';
 import { CharacterService } from './services/character.service';
 import { handleError } from './utils/handle-error';
 
-interface AppState {
-  items: Character[];
-  searchQuery: string;
-  isLoading: boolean;
-  error: string | null;
-}
+const App: FC = () => {
+  const [items, setItems] = useState<Character[]>([]);
+  const [searchQuery, setSearchQuery] = useState(
+    localStorage.getItem('saved-search-query') || ''
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-class App extends Component<unknown, AppState> {
-  state: AppState = {
-    items: [],
-    searchQuery: localStorage.getItem('saved-search-query') || '',
-    isLoading: false,
-    error: null,
-  };
+  useEffect(() => {
+    searchCharacters(searchQuery);
+  }, [searchQuery]);
 
-  componentDidMount() {
-    this.loadInitialData();
-  }
-
-  loadInitialData = () => {
-    this.searchCharacters(this.state.searchQuery);
-  };
-
-  searchCharacters = async (query: string) => {
-    this.setState({ isLoading: true, error: null });
+  const searchCharacters = async (query: string) => {
+    setIsLoading(true);
+    setError(null);
 
     try {
       const {
         data: { results },
       } = await CharacterService.getAllCharacters(query);
-
-      this.setState({ items: results });
-    } catch (error) {
-      this.setState({ error: handleError(error) });
+      setItems(results || []);
+    } catch (err) {
+      setError(handleError(err));
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   };
 
-  render() {
-    const { items, searchQuery, error, isLoading } = this.state;
-
-    return (
-      <div className="mx-auto">
-        <header className="border-b-amber-500 border-b-2 py-5">
-          <Search searchQuery={searchQuery} onSearch={this.searchCharacters} />
-        </header>
-        <main className="max-w-[1280px] w-[calc(100vw-50px)] mx-auto">
-          {isLoading && <Spinner />}
-          {error && <ErrorBlock errorText={error} />}
-          {!isLoading && !error && <CardList items={items} />}
-        </main>
-        <ErrorButton />
-      </div>
-    );
+  if (isLoading) {
+    return <Spinner />;
   }
-}
+
+  return (
+    <div className="mx-auto">
+      <header className="border-b-amber-500 border-b-2 py-5">
+        <Search
+          searchQuery={searchQuery}
+          onSearch={(query) => {
+            setSearchQuery(query);
+            searchCharacters(query);
+          }}
+        />
+      </header>
+      <main className="max-w-[1280px] w-[calc(100vw-50px)] mx-auto">
+        {error && <ErrorBlock errorText={error} />}
+        {!isLoading && !error && <CardList items={items} />}
+      </main>
+      <ErrorButton />
+    </div>
+  );
+};
 
 export default App;
