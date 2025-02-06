@@ -11,23 +11,20 @@ export const Pagination: FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  const handlePrevPage = () => onPageChange(currentPage - 1);
+  const handleNextPage = () => onPageChange(currentPage + 1);
+
   return (
-    <div className="flex flex-row overflow-x-auto gap-4 justify-center">
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-        <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`w-10 h-10 flex items-center justify-center border rounded
-            ${
-              currentPage === page
-                ? 'bg-amber-500 border-amber-500 !text-teal-950'
-                : 'border-gray-300 hover:border-amber-500'
-            }`}
-          disabled={currentPage === page}
-        >
-          {page}
-        </button>
-      ))}
+    <div className="flex flex-row gap-4 justify-center text-center items-center">
+      <button disabled={currentPage === 1} onClick={handlePrevPage}>
+        ◄ Prev
+      </button>
+      <span className="text-amber-500 w-20">
+        {currentPage} of {totalPages}
+      </span>
+      <button disabled={currentPage === totalPages} onClick={handleNextPage}>
+        Next ►
+      </button>
     </div>
   );
 };

@@ -1,17 +1,23 @@
 import { useState, useEffect, FC } from 'react';
-import { CardList, ErrorBlock, Search, Spinner } from './components';
+import { useSearchParams } from 'react-router';
+import {
+  CardList,
+  ErrorBlock,
+  Pagination,
+  Search,
+  Spinner,
+} from './components';
 import { Character } from './shared/types/character.interface';
 import { CharacterService } from './services/character.service';
 import { handleError } from './utils/handle-error';
-import { useLocalStorage } from './hooks/use-local-storage';
-import Pagination from './components/Pagination/Pagination';
 
 const App: FC = () => {
   const [items, setItems] = useState<Character[]>([]);
   const [totalPages, setTotalPages] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const { value: searchQuery, setValue: setSearchQuery } =
-    useLocalStorage('saved-search-query');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const searchQuery = searchParams.get('query') || '';
+  const currentPage = Number(searchParams.get('page')) || 1;
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,12 +45,8 @@ const App: FC = () => {
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    setSearchParams({ query: searchQuery, page: String(page) });
   };
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   return (
     <div className="mx-auto">
@@ -52,22 +54,28 @@ const App: FC = () => {
         <Search
           searchQuery={searchQuery}
           onSearch={(query) => {
-            setSearchQuery(query);
-            setCurrentPage(1);
+            setSearchParams({ query, page: '1' });
           }}
         />
       </header>
       <main className="max-w-[1280px] w-[calc(100vw-50px)] mx-auto">
-        {error ? <ErrorBlock errorText={error} /> : <CardList items={items} />}
-        {totalPages && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+        {isLoading ? (
+          <Spinner />
+        ) : error ? (
+          <ErrorBlock errorText={error} />
+        ) : (
+          <>
+            <CardList items={items} />
+            {totalPages && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </>
         )}
       </main>
-      {/* <ErrorButton /> */}
     </div>
   );
 };
