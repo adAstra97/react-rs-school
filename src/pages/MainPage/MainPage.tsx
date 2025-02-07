@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { Character } from '../../shared/types/character.interface';
-import { Outlet, useOutlet, useSearchParams } from 'react-router';
+import { Outlet, useNavigate, useOutlet, useSearchParams } from 'react-router';
 import { CharacterService } from '../../services/character.service';
 import { handleError } from '../../utils/handle-error';
 import {
@@ -14,14 +14,14 @@ import {
 const MainPage: FC = () => {
   const [items, setItems] = useState<Character[]>([]);
   const [totalPages, setTotalPages] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const outlet = useOutlet();
+  const navigate = useNavigate();
 
   const searchQuery = searchParams.get('query') || '';
   const currentPage = Number(searchParams.get('page')) || 1;
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const searchCharacters = async (query: string, page: number) => {
     setIsLoading(true);
@@ -49,9 +49,18 @@ const MainPage: FC = () => {
     setSearchParams({ query: searchQuery, page: String(page) });
   };
 
+  const handleCloseOutlet = () => {
+    if (outlet) {
+      navigate(`/${location.search}`);
+    }
+  };
+
   return (
-    <div className="flex flex-row gap-2">
-      <div className="mx-auto flex-[1_1_0%] px-5">
+    <div className="flex flex-row gap-2 min-h-screen">
+      <div
+        className={`${outlet ? 'border-r-2 border-amber-500' : ''} mx-auto flex-[1_1_0%] px-5`}
+        onClick={handleCloseOutlet}
+      >
         <header className="py-5">
           <Search
             searchQuery={searchQuery}
@@ -79,7 +88,7 @@ const MainPage: FC = () => {
           )}
         </main>
       </div>
-      <div className={`${outlet ? 'w-[500px] flex-shrink-0 flex p-8' : ''}`}>
+      <div className={`${outlet ? 'w-[500px] flex p-8' : ''}`}>
         <Outlet />
       </div>
     </div>

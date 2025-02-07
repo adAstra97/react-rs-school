@@ -10,7 +10,11 @@ const Card: FC<CardProps> = ({ card }) => {
   const { id, name, image, species } = card;
 
   return (
-    <Link to={`/details/${id}`} className="block">
+    <Link
+      to={`/details/${id}${location.search}`}
+      className="h-auto max-h-[200px]"
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className="relative rounded-2xl overflow-hidden group">
         <img
           className="w-[200px] h-[200px] object-cover object-center transition-opacity group-hover:opacity-100"
