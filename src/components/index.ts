@@ -6,3 +6,4 @@ export { default as ErrorBoundary } from './ErrorBoundary/ErrorBoundary.tsx';
 export { default as ErrorBlock } from './ErrorBlock/ErrorBlock.tsx';
 export { default as Spinner } from './Spinner/Spinner.tsx';
 export { default as Pagination } from './Pagination/Pagination.tsx';
+export { OverlayWithClose } from './OverlayWithClose/OverlayWithClose.tsx';

@@ -1,4 +1,4 @@
-import { useState, FC } from 'react';
+import { useState, FC, useEffect } from 'react';
 
 interface SearchProps {
   searchQuery: string;
@@ -7,6 +7,10 @@ interface SearchProps {
 
 const Search: FC<SearchProps> = ({ searchQuery, onSearch }) => {
   const [localQuery, setLocalQuery] = useState(searchQuery);
+
+  useEffect(() => {
+    setLocalQuery(searchQuery);
+  }, [searchQuery]);
 
   const handleSearch = () => {
     const trimmedQuery = localQuery.trim();

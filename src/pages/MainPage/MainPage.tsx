@@ -1,11 +1,13 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Character } from '../../shared/types/character.interface';
 import { Outlet, useNavigate, useOutlet, useSearchParams } from 'react-router';
 import { CharacterService } from '../../services/character.service';
 import { handleError } from '../../utils/handle-error';
+import { useLocalStorage } from '../../hooks/use-local-storage';
 import {
   CardList,
   ErrorBlock,
+  OverlayWithClose,
   Pagination,
   Search,
   Spinner,
@@ -17,33 +19,39 @@ const MainPage: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { value: savedQuery, setValue: setSavedQuery } =
+    useLocalStorage('search-query');
   const outlet = useOutlet();
   const navigate = useNavigate();
 
   const searchQuery = searchParams.get('query') || '';
   const currentPage = Number(searchParams.get('page')) || 1;
 
-  const searchCharacters = async (query: string, page: number) => {
-    setIsLoading(true);
-    setError(null);
+  const searchCharacters = useCallback(
+    async (query: string, page: number) => {
+      setIsLoading(true);
+      setError(null);
+      setSavedQuery(query);
 
-    try {
-      const {
-        data: { info, results },
-      } = await CharacterService.getAllCharacters(query, page);
-      setItems(results || []);
-      setTotalPages(info.pages);
-    } catch (err) {
-      setError(handleError(err));
-      setTotalPages(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      try {
+        const {
+          data: { info, results },
+        } = await CharacterService.getAllCharacters(query, page);
+        setItems(results || []);
+        setTotalPages(info.pages);
+      } catch (err) {
+        setError(handleError(err));
+        setTotalPages(null);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setSavedQuery]
+  );
 
   useEffect(() => {
     searchCharacters(searchQuery, currentPage);
-  }, [searchQuery, currentPage]);
+  }, [searchQuery, currentPage, searchCharacters]);
 
   const handlePageChange = (page: number) => {
     setSearchParams({ query: searchQuery, page: String(page) });
@@ -58,12 +66,12 @@ const MainPage: FC = () => {
   return (
     <div className="flex flex-row gap-2 min-h-screen">
       <div
-        className={`${outlet ? 'border-r-2 border-amber-500' : ''} mx-auto flex-[1_1_0%] px-5`}
-        onClick={handleCloseOutlet}
+        className={`${outlet ? 'border-r-2 border-r-stone-600 relative' : ''} mx-auto flex-[1_1_0%] px-5`}
       >
+        <OverlayWithClose isOpen={!!outlet} onClose={handleCloseOutlet} />
         <header className="py-5">
           <Search
-            searchQuery={searchQuery}
+            searchQuery={savedQuery}
             onSearch={(query) => {
               setSearchParams({ query, page: '1' });
             }}
