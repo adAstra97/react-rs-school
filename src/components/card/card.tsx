@@ -1,37 +1,29 @@
 import { FC } from 'react';
 import { Character } from '../../shared/types/character.interface';
+import { Link } from 'react-router';
 
 interface CardProps {
   card: Character;
 }
 
 const Card: FC<CardProps> = ({ card }) => {
-  const { name, image, species, location, origin } = card;
+  const { id, name, image, species } = card;
 
   return (
-    <div className="flex border-amber-500 text-white border-2 w-[600px] rounded-2xl overflow-hidden">
-      <div className="flex-[1_1_0%] w-full">
+    <Link to={`/details/${id}`} className="block">
+      <div className="relative rounded-2xl overflow-hidden group">
         <img
-          className="w-full h-full object-cover object-center"
+          className="w-[200px] h-[200px] object-cover object-center transition-opacity group-hover:opacity-100"
           src={image}
           alt={name}
         />
-      </div>
-      <div className="p-4 flex-[1.1_1_0%] flex flex-col gap-2">
-        <div className="mb-1">
-          <h3>{name}</h3>
-          <span>{species}</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-gray-300">Last known location:</span>
-          <span>{location.name}</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-gray-300">First seen in:</span>
-          <span>{origin.name}</span>
+        <div className="absolute inset-0 bg-black/70 transition-colors group-hover:bg-black/30" />
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 text-white">
+          <h3 className="text-2xl font-bold mb-2 drop-shadow-md">{name}</h3>
+          <span className="text-lg opacity-90 drop-shadow-md">{species}</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

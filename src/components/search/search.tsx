@@ -14,7 +14,7 @@ const Search: FC<SearchProps> = ({ searchQuery, onSearch }) => {
   };
 
   return (
-    <div className="flex items-center justify-center gap-2 max-w-[1280px] w-[calc(100vw-100px)] mx-auto">
+    <div className="flex items-center justify-center gap-2 max-w-[900px] mx-auto">
       <input
         type="search"
         value={localQuery}
