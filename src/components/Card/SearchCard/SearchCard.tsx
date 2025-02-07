@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import { Character } from '../../shared/types/character.interface';
 import { Link } from 'react-router';
+import { Character } from '../../../shared/types/character.interface';
 
-interface CardProps {
+interface SearchCardProps {
   card: Character;
 }
 
-export const Card: FC<CardProps> = ({ card }) => {
+export const SearchCard: FC<SearchCardProps> = ({ card }) => {
   const { id, name, image, species } = card;
 
   return (

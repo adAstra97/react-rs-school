@@ -5,11 +5,11 @@ import { CharacterService } from '../../services/character.service';
 import { handleError } from '../../utils/handle-error';
 import { useLocalStorage } from '../../hooks/use-local-storage';
 import {
-  CardList,
   ErrorBlock,
   OverlayWithClose,
   Pagination,
   Search,
+  SearchCardList,
   Spinner,
 } from '../../components';
 
@@ -84,7 +84,7 @@ const MainPage: FC = () => {
             <ErrorBlock errorText={error} />
           ) : (
             <>
-              <CardList items={items} />
+              <SearchCardList items={items} />
               {totalPages && (
                 <Pagination
                   currentPage={currentPage}

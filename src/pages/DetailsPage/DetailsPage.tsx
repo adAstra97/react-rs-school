@@ -4,6 +4,7 @@ import { CharacterService } from '../../services/character.service';
 import { Character } from '../../shared/types/character.interface';
 import { handleError } from '../../utils/handle-error';
 import { ErrorBlock, Spinner } from '../../components';
+import HomeIcon from '../../assets/icons/close.svg';
 
 const DetailsPage: FC = () => {
   const { id } = useParams();
@@ -43,8 +44,8 @@ const DetailsPage: FC = () => {
       {error && <ErrorBlock errorText={error} />}
       {!isLoading && !error && (
         <>
-          <Link to={`/${location.search}`} className="close self-end">
-            Close
+          <Link to={`/${location.search}`} className="close self-start">
+            <img src={HomeIcon} width={30} height={30} alt="close" />
           </Link>
           <div className="flex border-amber-500 text-white border-2 rounded-2xl overflow-hidden w-full">
             <div className="flex flex-col flex-1">

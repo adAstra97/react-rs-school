@@ -1,6 +1,6 @@
 export { Search } from './Search/Search.tsx';
-export { CardList } from './CardList/CardList.tsx';
-export { Card } from './Card/Card.tsx';
+export { SearchCardList } from './SearchCardList/SearchCardList.tsx';
+export { SearchCard } from './Card/SearchCard/SearchCard.tsx';
 export { ErrorButton } from './ErrorButton/ErrorButton.tsx';
 export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary.tsx';
 export { ErrorBlock } from './ErrorBlock/ErrorBlock.tsx';
