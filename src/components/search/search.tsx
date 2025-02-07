@@ -5,7 +5,7 @@ interface SearchProps {
   onSearch: (query: string) => void;
 }
 
-const Search: FC<SearchProps> = ({ searchQuery, onSearch }) => {
+export const Search: FC<SearchProps> = ({ searchQuery, onSearch }) => {
   const [localQuery, setLocalQuery] = useState(searchQuery);
 
   useEffect(() => {
@@ -32,5 +32,3 @@ const Search: FC<SearchProps> = ({ searchQuery, onSearch }) => {
     </div>
   );
 };
-
-export default Search;

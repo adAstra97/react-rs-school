@@ -28,5 +28,3 @@ export const Pagination: FC<PaginationProps> = ({
     </div>
   );
 };
-
-export default Pagination;

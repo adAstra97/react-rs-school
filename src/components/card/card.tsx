@@ -6,7 +6,7 @@ interface CardProps {
   card: Character;
 }
 
-const Card: FC<CardProps> = ({ card }) => {
+export const Card: FC<CardProps> = ({ card }) => {
   const { id, name, image, species } = card;
 
   return (
@@ -29,5 +29,3 @@ const Card: FC<CardProps> = ({ card }) => {
     </Link>
   );
 };
-
-export default Card;
