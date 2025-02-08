@@ -9,7 +9,7 @@ import {
   OverlayWithClose,
   Pagination,
   Search,
-  SearchCardList,
+  CardList,
   Spinner,
 } from '../../components';
 
@@ -84,7 +84,7 @@ const MainPage: FC = () => {
             <ErrorBlock errorText={error} />
           ) : (
             <>
-              <SearchCardList items={items} />
+              <CardList items={items} />
               {totalPages && (
                 <Pagination
                   currentPage={currentPage}
@@ -96,7 +96,7 @@ const MainPage: FC = () => {
           )}
         </main>
       </div>
-      <div className={`${outlet ? 'w-[500px] flex p-8' : ''}`}>
+      <div className={`${outlet ? 'w-[500px] flex p-8 relative' : ''}`}>
         <Outlet />
       </div>
     </div>

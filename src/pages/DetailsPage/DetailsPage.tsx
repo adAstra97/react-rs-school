@@ -33,15 +33,13 @@ const DetailsPage: FC = () => {
     getCharacter();
   }, [id]);
 
-  if (!character) {
-    return null;
-  }
-
   return (
-    <div className="flex-1 flex justify-center flex-col gap-2 items-center relative">
+    <div className="flex-1 flex justify-center flex-col gap-2 items-center">
       {isLoading && <Spinner />}
       {error && <ErrorBlock errorText={error} />}
-      {!isLoading && !error && <DetailedCard character={character} />}
+      {!isLoading && !error && character && (
+        <DetailedCard character={character} />
+      )}
     </div>
   );
 };

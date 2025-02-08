@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { Link } from 'react-router';
-import { Character } from '../../../shared/types/character.interface';
+import { CharacterCard } from '../../../shared/types/types';
 
 interface SearchCardProps {
-  card: Character;
+  card: CharacterCard;
 }
 
 export const SearchCard: FC<SearchCardProps> = ({ card }) => {

@@ -1,5 +1,5 @@
 export { Search } from './Search/Search.tsx';
-export { SearchCardList } from './SearchCardList/SearchCardList.tsx';
+export { CardList } from './CardList/CardList.tsx';
 export { SearchCard } from './Card/SearchCard/SearchCard.tsx';
 export { ErrorButton } from './ErrorButton/ErrorButton.tsx';
 export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary.tsx';
