@@ -1,6 +1,12 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Character } from '../../shared/types/character.interface';
-import { Outlet, useNavigate, useOutlet, useSearchParams } from 'react-router';
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useOutlet,
+  useSearchParams,
+} from 'react-router';
 import { CharacterService } from '../../services/character.service';
 import { handleError } from '../../utils/handle-error';
 import { useLocalStorage } from '../../hooks/use-local-storage';
@@ -23,6 +29,7 @@ const MainPage: FC = () => {
     useLocalStorage('search-query');
   const outlet = useOutlet();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const searchQuery = searchParams.get('query') || '';
   const currentPage = Number(searchParams.get('page')) || 1;

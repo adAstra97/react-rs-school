@@ -1,17 +1,19 @@
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import HomeIcon from '../../../assets/icons/close.svg';
-import { Character } from '../../../shared/types/character.interface';
 import { FC } from 'react';
+import { DetailedCharacterCard } from '../../../shared/types/types';
 
 interface DetailedCardProps {
-  character: Character;
+  character: DetailedCharacterCard;
 }
 
 export const DetailedCard: FC<DetailedCardProps> = ({ character }) => {
+  const location = useLocation();
+
   return (
     <>
       <Link to={`/${location.search}`} className="close self-start">
-        <img src={HomeIcon} width={30} height={30} alt="close" />
+        <img src={HomeIcon} width={40} height={40} alt="close" />
       </Link>
       <div className="flex border-amber-500 text-white border-2 rounded-2xl overflow-hidden w-full">
         <div className="flex flex-col flex-1">

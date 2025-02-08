@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { CharacterCard } from '../../../shared/types/types';
 
 interface SearchCardProps {
@@ -7,6 +7,7 @@ interface SearchCardProps {
 }
 
 export const SearchCard: FC<SearchCardProps> = ({ card }) => {
+  const location = useLocation();
   const { id, name, image, species } = card;
 
   return (

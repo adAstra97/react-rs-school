@@ -8,3 +8,8 @@ export type CharacterCard = Pick<
   Character,
   'id' | 'name' | 'image' | 'species'
 >;
+
+export type DetailedCharacterCard = Pick<
+  Character,
+  'id' | 'name' | 'image' | 'species' | 'location' | 'origin'
+>;

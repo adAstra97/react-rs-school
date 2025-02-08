@@ -1,9 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { vi } from 'vitest';
+import { BrowserRouter } from 'react-router';
 import { CharacterService } from '../services/character.service';
 import { handleError } from '../utils/handle-error';
-import { BrowserRouter } from 'react-router';
 import { MainPage } from '../pages';
-import { vi } from 'vitest';
 
 vi.mock('../services/character.service.ts');
 vi.mock('../utils/handle-error.ts');

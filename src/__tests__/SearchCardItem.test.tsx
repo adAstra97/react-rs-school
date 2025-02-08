@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router';
 import { SearchCard } from '../components';
 import { CharacterCard } from '../shared/types/types';
-import { BrowserRouter } from 'react-router';
 
 const mockCard: CharacterCard = {
   id: 1,

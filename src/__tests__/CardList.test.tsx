@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router';
 import { CardList } from '../components';
 import { CharacterCard } from '../shared/types/types';
-import { BrowserRouter } from 'react-router';
 
 const mockCards: CharacterCard[] = [
   {
