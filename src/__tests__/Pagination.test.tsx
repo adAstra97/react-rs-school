@@ -25,7 +25,7 @@ const MockPagination = ({
 };
 
 describe('Pagination', () => {
-  it('updates the URL query parameter when page changes', async () => {
+  it('should update the URL query parameter when page changes', async () => {
     render(
       <BrowserRouter>
         <MockPagination currentPage={1} totalPages={3} />
