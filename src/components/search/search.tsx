@@ -1,44 +1,34 @@
-import { Component } from 'react';
+import { useState, FC, useEffect } from 'react';
 
 interface SearchProps {
   searchQuery: string;
   onSearch: (query: string) => void;
 }
 
-interface SearchState {
-  searchQuery: string;
-}
+export const Search: FC<SearchProps> = ({ searchQuery, onSearch }) => {
+  const [localQuery, setLocalQuery] = useState(searchQuery);
 
-class Search extends Component<SearchProps, SearchState> {
-  state = { searchQuery: this.props.searchQuery };
+  useEffect(() => {
+    setLocalQuery(searchQuery);
+  }, [searchQuery]);
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchQuery: event.target.value });
+  const handleSearch = () => {
+    const trimmedQuery = localQuery.trim();
+    onSearch(trimmedQuery);
   };
 
-  handleSearch = () => {
-    const { searchQuery } = this.state;
-    const trimmedQuery = searchQuery.trim();
-
-    this.props.onSearch(trimmedQuery);
-    localStorage.setItem('saved-search-query', trimmedQuery);
-  };
-
-  render() {
-    return (
-      <div className=" flex items-center justify-center gap-2 max-w-[1280px] w-[calc(100vw-100px)] mx-auto">
-        <input
-          type="text"
-          value={this.state.searchQuery}
-          placeholder="Search..."
-          onChange={this.handleChange}
-        />
-        <button className="text-lg" type="button" onClick={this.handleSearch}>
-          Search
-        </button>
-      </div>
-    );
-  }
-}
-
-export default Search;
+  return (
+    <div className="flex items-center justify-center gap-2 max-w-[900px] w-[30vw] mx-auto">
+      <input
+        className="w-full"
+        type="search"
+        value={localQuery}
+        placeholder="Search..."
+        onChange={(e) => setLocalQuery(e.target.value)}
+      />
+      <button className="text-lg" type="button" onClick={handleSearch}>
+        Search
+      </button>
+    </div>
+  );
+};

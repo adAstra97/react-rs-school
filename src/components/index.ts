@@ -1,7 +1,10 @@
-export { default as Search } from './search/search.tsx';
-export { default as CardList } from './card-list/card-list.tsx';
-export { default as Card } from './card/card.tsx';
-export { default as ErrorButton } from './error-button/error-button.tsx';
-export { default as ErrorBoundary } from './error-boundary/error-boundary.tsx';
-export { default as ErrorBlock } from './error-block/error-block.tsx';
-export { default as Spinner } from './spinner/spinner.tsx';
+export { Search } from './Search/Search.tsx';
+export { CardList } from './CardList/CardList.tsx';
+export { SearchCard } from './Card/SearchCard/SearchCard.tsx';
+export { ErrorButton } from './ErrorButton/ErrorButton.tsx';
+export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary.tsx';
+export { ErrorBlock } from './ErrorBlock/ErrorBlock.tsx';
+export { Spinner } from './Spinner/Spinner.tsx';
+export { Pagination } from './Pagination/Pagination.tsx';
+export { OverlayWithClose } from './OverlayWithClose/OverlayWithClose.tsx';
+export { DetailedCard } from './Card/DetailedCard/DetailedCard.tsx';
