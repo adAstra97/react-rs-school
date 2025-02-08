@@ -7,3 +7,4 @@ export { ErrorBlock } from './ErrorBlock/ErrorBlock.tsx';
 export { Spinner } from './Spinner/Spinner.tsx';
 export { Pagination } from './Pagination/Pagination.tsx';
 export { OverlayWithClose } from './OverlayWithClose/OverlayWithClose.tsx';
+export { DetailedCard } from './Card/DetailedCard/DetailedCard.tsx';
