@@ -26,6 +26,6 @@ button {
   }
 }
 
-input {
-  @apply border-2 rounded-md p-2 w-[vw] min-w-[200px] text-sm text-amber-500 focus:outline-none;
+.input {
+  @apply border-2 rounded-md p-2 min-w-[200px] text-sm text-amber-500 focus:outline-none;
 }

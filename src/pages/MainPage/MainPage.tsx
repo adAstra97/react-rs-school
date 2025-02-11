@@ -18,6 +18,7 @@ import {
   CardList,
   Spinner,
 } from '../../components';
+import { ThemeSwitcher } from '../../components/ThemeSwitcher/ThemeSwitcher';
 
 const MainPage: FC = () => {
   const [items, setItems] = useState<Character[]>([]);
@@ -72,6 +73,7 @@ const MainPage: FC = () => {
 
   return (
     <div className="flex flex-row gap-2 min-h-screen">
+      <ThemeSwitcher />
       <div
         className={`${outlet ? 'border-r-2 border-r-stone-600 relative' : ''} mx-auto flex-[1_1_0%] px-5`}
       >

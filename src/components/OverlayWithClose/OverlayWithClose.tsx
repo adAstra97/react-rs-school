@@ -3,8 +3,6 @@ import { FC } from 'react';
 interface OverlayWithCloseProps {
   isOpen: boolean;
   onClose: () => void;
-  opacity?: number;
-  zIndex?: number;
 }
 
 export const OverlayWithClose: FC<OverlayWithCloseProps> = ({
