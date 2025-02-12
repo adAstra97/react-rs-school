@@ -1,11 +1,11 @@
-import { useState, FC, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 interface SearchProps {
   searchQuery: string;
   onSearch: (query: string) => void;
 }
 
-export const Search: FC<SearchProps> = ({ searchQuery, onSearch }) => {
+export const Search = ({ searchQuery, onSearch }: SearchProps) => {
   const [localQuery, setLocalQuery] = useState(searchQuery);
 
   useEffect(() => {

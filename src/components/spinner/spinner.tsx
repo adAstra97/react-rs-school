@@ -1,7 +1,6 @@
-import { FC } from 'react';
 import SpinnerIcon from '../../assets/icons/spinner.svg';
 
-export const Spinner: FC = () => {
+export const Spinner = () => {
   return (
     <div
       data-testid="spinner"

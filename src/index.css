@@ -8,8 +8,8 @@
   --primary: #f59e0b;
   --button: #f59e0b;
   --secondary: #b9babb;
-  --contrast: #FFFFFF;
-  --card-overlay:  #000000b3;
+  --contrast: #ffffff;
+  --card-overlay: #000000b3;
 }
 
 .light {
@@ -19,7 +19,7 @@
   --button: #ff832b;
   --secondary: #cf7413;
   --contrast: #171717;
-  --card-overlay:  #00000090;
+  --card-overlay: #00000090;
 }
 
 html {
@@ -28,7 +28,7 @@ html {
 }
 
 body {
-  @apply overflow-hidden bg-mainBackground;
+  @apply overflow-hidden;
 }
 
 h2,

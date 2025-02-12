@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Character } from '../../shared/types/character.interface';
 import {
   Outlet,
@@ -17,10 +17,10 @@ import {
   Search,
   CardList,
   Spinner,
+  ThemeSwitcher,
 } from '../../components';
-import { ThemeSwitcher } from '../../components/ThemeSwitcher/ThemeSwitcher';
 
-const MainPage: FC = () => {
+const MainPage = () => {
   const [items, setItems] = useState<Character[]>([]);
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,7 +72,7 @@ const MainPage: FC = () => {
   };
 
   return (
-    <div className="flex flex-row min-h-screen">
+    <div className="flex flex-row min-h-screen bg-mainBackground">
       <ThemeSwitcher />
       <div
         className={`${outlet ? 'border-r-2 border-r-stone-500 relative' : ''} mx-auto flex-[1_1_0%] px-5`}

@@ -1,7 +1,14 @@
 import { createContext, useContext } from 'react';
 
-export const ThemeStateContext = createContext('dark');
-export const ThemeDispatchContext = createContext<() => void>(() => {});
+interface ThemeContextType {
+  theme: string;
+  toggleTheme: () => void;
+}
 
-export const useTheme = () => useContext(ThemeStateContext);
-export const useThemeUpdate = () => useContext(ThemeDispatchContext);
+export const ThemeContext = createContext<ThemeContextType>({
+  theme: 'dark',
+  toggleTheme: () => {},
+});
+
+export const useTheme = () => useContext(ThemeContext).theme;
+export const useThemeUpdate = () => useContext(ThemeContext).toggleTheme;

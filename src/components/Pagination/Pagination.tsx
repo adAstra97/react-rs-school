@@ -1,16 +1,14 @@
-import { FC } from 'react';
-
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
 }
 
-export const Pagination: FC<PaginationProps> = ({
+export const Pagination = ({
   currentPage,
   totalPages,
   onPageChange,
-}) => {
+}: PaginationProps) => {
   const handlePrevPage = () => onPageChange(currentPage - 1);
   const handleNextPage = () => onPageChange(currentPage + 1);
 

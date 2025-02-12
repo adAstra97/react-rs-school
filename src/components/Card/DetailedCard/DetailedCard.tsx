@@ -1,13 +1,12 @@
 import { Link, useLocation } from 'react-router';
 import HomeIcon from '../../../assets/icons/close.svg';
-import { FC } from 'react';
 import { DetailedCharacterCard } from '../../../shared/types/types';
 
 interface DetailedCardProps {
   character: DetailedCharacterCard;
 }
 
-export const DetailedCard: FC<DetailedCardProps> = ({ character }) => {
+export const DetailedCard = ({ character }: DetailedCardProps) => {
   const location = useLocation();
 
   return (

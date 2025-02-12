@@ -1,14 +1,12 @@
-import { FC } from 'react';
-
 interface OverlayWithCloseProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const OverlayWithClose: FC<OverlayWithCloseProps> = ({
+export const OverlayWithClose = ({
   isOpen,
   onClose,
-}) => {
+}: OverlayWithCloseProps) => {
   if (!isOpen) return null;
 
   return (
