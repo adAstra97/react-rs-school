@@ -5,12 +5,12 @@
   --size-of-icon: 1.4em;
   --slider-offset: 0.3em;
   position: fixed;
-  top: 20px;
+  top: 25px;
   left: 20px;
   z-index: 150;
   width: var(--width-of-switch);
   height: var(--height-of-switch);
-  border: 2px solid #FE9A00;
+  border: 2px solid #fe9a00;
   border-radius: 30px;
 }
 

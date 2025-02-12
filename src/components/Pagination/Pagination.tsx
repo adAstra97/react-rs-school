@@ -19,7 +19,7 @@ export const Pagination: FC<PaginationProps> = ({
       <button disabled={currentPage === 1} onClick={handlePrevPage}>
         ◄ Prev
       </button>
-      <span className="text-amber-500 w-20">
+      <span className="text-primary w-20">
         {currentPage} of {totalPages}
       </span>
       <button disabled={currentPage === totalPages} onClick={handleNextPage}>

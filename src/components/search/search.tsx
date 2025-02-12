@@ -20,7 +20,7 @@ export const Search: FC<SearchProps> = ({ searchQuery, onSearch }) => {
   return (
     <div className="flex items-center justify-center gap-2 max-w-[900px] w-[30vw] mx-auto">
       <input
-        className="w-full input"
+        className="w-full border-2 bg-detailsBackground placeholder:text-orange-400 border-button rounded-md p-2 min-w-[200px] text-sm text-primary focus:outline-none"
         type="search"
         value={localQuery}
         placeholder="Search..."

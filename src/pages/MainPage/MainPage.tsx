@@ -72,10 +72,10 @@ const MainPage: FC = () => {
   };
 
   return (
-    <div className="flex flex-row gap-2 min-h-screen">
+    <div className="flex flex-row min-h-screen">
       <ThemeSwitcher />
       <div
-        className={`${outlet ? 'border-r-2 border-r-stone-600 relative' : ''} mx-auto flex-[1_1_0%] px-5`}
+        className={`${outlet ? 'border-r-2 border-r-stone-500 relative' : ''} mx-auto flex-[1_1_0%] px-5`}
       >
         <OverlayWithClose isOpen={!!outlet} onClose={handleCloseOutlet} />
         <header className="py-5">
