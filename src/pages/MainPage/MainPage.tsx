@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Character } from '../../shared/types/character.interface';
+import { useEffect } from 'react';
 import {
   Outlet,
   useLocation,
@@ -7,7 +6,6 @@ import {
   useOutlet,
   useSearchParams,
 } from 'react-router';
-import { CharacterService } from '../../services/character.service';
 import { handleError } from '../../utils/handle-error';
 import { useLocalStorage } from '../../hooks/use-local-storage';
 import {
@@ -19,12 +17,9 @@ import {
   Spinner,
   ThemeSwitcher,
 } from '../../components';
+import { useGetCharactersQuery } from '../../redux';
 
 const MainPage = () => {
-  const [items, setItems] = useState<Character[]>([]);
-  const [totalPages, setTotalPages] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const { value: savedQuery, setValue: setSavedQuery } =
     useLocalStorage('search-query');
@@ -35,31 +30,17 @@ const MainPage = () => {
   const searchQuery = searchParams.get('query') || '';
   const currentPage = Number(searchParams.get('page')) || 1;
 
-  const searchCharacters = useCallback(
-    async (query: string, page: number) => {
-      setIsLoading(true);
-      setError(null);
-      setSavedQuery(query);
+  const { data, isFetching, error, isError } = useGetCharactersQuery({
+    name: searchQuery,
+    page: currentPage,
+  });
 
-      try {
-        const {
-          data: { info, results },
-        } = await CharacterService.getAllCharacters(query, page);
-        setItems(results || []);
-        setTotalPages(info.pages);
-      } catch (err) {
-        setError(handleError(err));
-        setTotalPages(null);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [setSavedQuery]
-  );
+  const items = data?.results || [];
+  const totalPages = data?.info.pages || 1;
 
   useEffect(() => {
-    searchCharacters(searchQuery, currentPage);
-  }, [searchQuery, currentPage, searchCharacters]);
+    setSavedQuery(searchQuery);
+  }, [searchQuery, setSavedQuery]);
 
   const handlePageChange = (page: number) => {
     setSearchParams({ query: searchQuery, page: String(page) });
@@ -87,13 +68,13 @@ const MainPage = () => {
           />
         </header>
         <main className="max-w-[900px] mx-auto">
-          {isLoading ? (
+          {isFetching ? (
             <Spinner />
-          ) : error ? (
-            <ErrorBlock errorText={error} />
+          ) : isError ? (
+            <ErrorBlock errorText={error ? handleError(error) : ''} />
           ) : (
             <>
-              <CardList items={items} />
+              <CardList items={items || []} />
               {totalPages && (
                 <Pagination
                   currentPage={currentPage}
