@@ -1,13 +1,13 @@
-import { PropsWithChildren, useCallback } from 'react';
+import { PropsWithChildren } from 'react';
 import { useLocalStorage } from '../../hooks/use-local-storage';
 import { ThemeContext } from './ThemeContext';
 
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const { value: theme, setValue: setTheme } = useLocalStorage('theme', 'dark');
 
-  const toggleTheme = useCallback(() => {
+  const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
-  }, [setTheme]);
+  };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
