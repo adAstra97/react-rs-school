@@ -1,17 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CharacterCard } from '../../shared/types/types';
+import { Character } from '../../shared/types/character.interface';
 
 export interface SelectedCharactersState {
-  selectedCharacters: CharacterCard[];
+  selectedCharacters: Character[];
 }
 
-const initialState: CharacterCard[] = [];
+const initialState: Character[] = [];
 
 const selectedCharactersSlice = createSlice({
   name: 'selectedCharacters',
   initialState,
   reducers: {
-    addSelectedCharacter: (state, action: PayloadAction<CharacterCard>) => {
+    addSelectedCharacter: (state, action: PayloadAction<Character>) => {
       state.push(action.payload);
     },
     removeSelectedCharacter: (state, action: PayloadAction<number>) => {

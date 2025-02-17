@@ -5,7 +5,7 @@
   --size-of-icon: 1.4em;
   --slider-offset: 0.3em;
   position: fixed;
-  top: 25px;
+  top: 24px;
   left: 20px;
   z-index: 150;
   width: var(--width-of-switch);

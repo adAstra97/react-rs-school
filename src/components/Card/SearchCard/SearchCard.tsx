@@ -1,14 +1,14 @@
 import { Link, useLocation } from 'react-router';
-import { CharacterCard } from '../../../shared/types/types';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { ChangeEvent } from 'react';
 import {
   addSelectedCharacter,
   removeSelectedCharacter,
 } from '../../../redux/slices/selectedCharactersSlice';
+import { Character } from '../../../shared/types/character.interface';
 
 interface SearchCardProps {
-  card: CharacterCard;
+  card: Character;
 }
 
 export const SearchCard = ({ card }: SearchCardProps) => {

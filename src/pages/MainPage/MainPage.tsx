@@ -18,6 +18,7 @@ import {
   ThemeSwitcher,
 } from '../../components';
 import { useGetCharactersQuery } from '../../redux';
+import { Flyout } from '../../components/Flyout/Flyout';
 
 const MainPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -86,6 +87,7 @@ const MainPage = () => {
           )}
         </main>
       </div>
+      <Flyout />
       <div className={`${outlet ? 'w-[500px] flex p-8 relative' : ''}`}>
         <Outlet />
       </div>

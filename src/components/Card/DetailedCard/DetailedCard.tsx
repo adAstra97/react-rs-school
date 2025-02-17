@@ -1,9 +1,9 @@
 import { Link, useLocation } from 'react-router';
 import HomeIcon from '../../../assets/icons/close.svg';
-import { DetailedCharacterCard } from '../../../shared/types/types';
+import { Character } from '../../../shared/types/character.interface';
 
 interface DetailedCardProps {
-  character: DetailedCharacterCard;
+  character: Character;
 }
 
 export const DetailedCard = ({ character }: DetailedCardProps) => {

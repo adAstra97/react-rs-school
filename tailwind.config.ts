@@ -6,6 +6,7 @@ export default {
       colors: {
         mainBackground: 'var(--main-background)',
         detailsBackground: 'var(--details-background)',
+        flyoutBackground: 'var(--flyout-background)',
         primary: 'var(--primary)',
         secondary: 'var(--secondary)',
         button: 'var(--button)',

@@ -1,8 +1,8 @@
 import { SearchCard } from '../Card/SearchCard/SearchCard';
-import { CharacterCard } from '../../shared/types/types';
+import { Character } from '../../shared/types/character.interface';
 
 interface CardListProps {
-  items: CharacterCard[];
+  items: Character[];
 }
 
 export const CardList = ({ items }: CardListProps) => {

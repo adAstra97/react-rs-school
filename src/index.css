@@ -5,6 +5,7 @@
 .dark {
   --main-background: #042f2e;
   --details-background: #042f2e;
+  --flyout-background: #042f2e;
   --primary: #f59e0b;
   --button: #f59e0b;
   --secondary: #b9babb;
@@ -15,6 +16,7 @@
 .light {
   --main-background: #ffefe1;
   --details-background: #fffbf4;
+  --flyout-background: #fffbf4;
   --primary: #ba6307;
   --button: #ff832b;
   --secondary: #cf7413;
