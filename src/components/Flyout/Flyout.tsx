@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { clearSelectedCharacters } from '../../redux/slices/selectedCharactersSlice';
 import { downloadCsvFile, generateCsvContent } from '../../utils/csv-export';
@@ -7,6 +8,7 @@ export const Flyout = () => {
   const selectedCharacters = useAppSelector(
     (state) => state.selectedCharacters
   );
+  const downloadLinkRef = useRef<HTMLAnchorElement>(null);
 
   const handleUnselectAll = () => {
     dispatch(clearSelectedCharacters());
@@ -15,7 +17,7 @@ export const Flyout = () => {
   const handleDownloadCharacters = () => {
     const csvContent = generateCsvContent(selectedCharacters);
     const fileName = `${selectedCharacters.length}_characters.csv`;
-    downloadCsvFile(csvContent, fileName);
+    downloadCsvFile(csvContent, fileName, downloadLinkRef.current);
   };
 
   return (
@@ -48,6 +50,7 @@ export const Flyout = () => {
           </button>
         </div>
       </div>
+      <a ref={downloadLinkRef} className="hidden" aria-hidden="true" />
     </div>
   );
 };

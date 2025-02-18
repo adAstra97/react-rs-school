@@ -1,6 +1,8 @@
 import { Character } from '../shared/types/character.interface';
 
 export const generateCsvContent = (characters: Character[]): string => {
+  const separatorLine = 'sep=;';
+
   const headers = [
     'Name',
     'Status',
@@ -21,15 +23,24 @@ export const generateCsvContent = (characters: Character[]): string => {
     character.image,
   ]);
 
-  return [headers.join(';'), ...rows.map((row) => row.join(';'))].join('\n');
+  return [
+    separatorLine,
+    headers.join(';'),
+    ...rows.map((row) => row.join(';')),
+  ].join('\n');
 };
 
-export const downloadCsvFile = (content: string, fileName: string): void => {
-  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+export const downloadCsvFile = (
+  content: string,
+  fileName: string,
+  linkElement: HTMLAnchorElement | null
+): void => {
+  if (!linkElement) return;
+
+  const blob = new Blob([content], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = fileName;
-  link.click();
+  linkElement.href = url;
+  linkElement.download = fileName;
+  linkElement.click();
   URL.revokeObjectURL(url);
 };
