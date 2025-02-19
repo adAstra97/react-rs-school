@@ -1,30 +1,49 @@
-// import { render, screen, waitFor } from '@testing-library/react';
-// import { vi } from 'vitest';
-// import { BrowserRouter } from 'react-router';
-// import { CharacterService } from '../services/character.service';
-// import { handleError } from '../utils/handle-error';
-// import { MainPage } from '../pages';
+import { render, screen, waitFor } from '@testing-library/react';
+import { vi } from 'vitest';
+import { BrowserRouter } from 'react-router';
+import { MainPage } from '../pages';
+import { useGetCharactersQuery } from '../redux/charactersApi';
+import { store } from '../redux';
+import { Provider } from 'react-redux';
 
-// vi.mock('../services/character.service.ts');
-// vi.mock('../utils/handle-error.ts');
+vi.mock('../redux/charactersApi', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../redux/charactersApi')>();
+  return {
+    ...mod,
+    useGetCharactersQuery: vi.fn(),
+  };
+});
 
-// describe('MainPage', () => {
-//   beforeEach(() => {
-//     vi.spyOn(CharacterService, 'getAllCharacters').mockRejectedValue(
-//       new Error('API Error')
-//     );
-//     vi.mocked(handleError).mockReturnValue('There is nothing here');
-//   });
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', () => ({
+  ...vi.importActual('react-router'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => ({
+    search: '?query=rick&page=2',
+  }),
+}));
 
-//   it('should display error message from server if no cards are present', async () => {
-//     render(
-//       <BrowserRouter>
-//         <MainPage />
-//       </BrowserRouter>
-//     );
+describe('MainPage', () => {
+  beforeEach(() => {
+    (useGetCharactersQuery as jest.Mock).mockReturnValue({
+      data: undefined,
+      error: { data: { error: 'There is nothing here' } },
+      isFetching: false,
+      isError: true,
+    });
+  });
 
-//     await waitFor(() => {
-//       expect(screen.getByText('There is nothing here :(')).toBeInTheDocument();
-//     });
-//   });
-// });
+  it('should display error message if no cards are present', async () => {
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <MainPage />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('There is nothing here :(')).toBeInTheDocument();
+    });
+  });
+});

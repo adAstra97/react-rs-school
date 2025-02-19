@@ -11,6 +11,7 @@ export const OverlayWithClose = ({
 
   return (
     <div
+      role="presentation"
       className={`absolute inset-0 bg-black/50 z-20 cursor-pointer`}
       onClick={onClose}
     />

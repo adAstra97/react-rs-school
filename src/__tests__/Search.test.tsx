@@ -1,103 +1,136 @@
-// import {
-//   render,
-//   screen,
-//   fireEvent,
-//   waitFor,
-//   renderHook,
-// } from '@testing-library/react';
-// import { describe, beforeEach, vi } from 'vitest';
-// import { MainPage } from '../pages';
-// import { MemoryRouter, useSearchParams } from 'react-router';
-// import { useLocalStorage } from '../hooks/use-local-storage';
-// import { CharacterService } from '../services/character.service';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  renderHook,
+} from '@testing-library/react';
+import { describe, beforeEach, vi } from 'vitest';
+import { MainPage } from '../pages';
+import { MemoryRouter, useSearchParams } from 'react-router';
+import { useLocalStorage } from '../hooks/use-local-storage';
+import { Provider } from 'react-redux';
+import { store, useGetCharactersQuery } from '../redux';
 
-// vi.mock('../services/character.service', () => ({
-//   CharacterService: {
-//     getAllCharacters: vi.fn().mockResolvedValue({
-//       data: {
-//         info: { pages: 1 },
-//         results: [],
-//       },
-//     }),
-//   },
-// }));
+vi.mock('../redux/charactersApi', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../redux/charactersApi')>();
+  return {
+    ...mod,
+    useGetCharactersQuery: vi.fn(),
+  };
+});
 
-// let mockSearchParams = new URLSearchParams();
-// const setSearchParamsMock = vi.fn((params: Record<string, string>) => {
-//   mockSearchParams = new URLSearchParams(params);
-// });
+let mockSearchParams = new URLSearchParams();
+const setSearchParamsMock = vi.fn((params: Record<string, string>) => {
+  mockSearchParams = new URLSearchParams(params);
+});
 
-// vi.mock('react-router', async (importOriginal) => {
-//   const actual = await importOriginal<typeof import('react-router')>();
-//   return {
-//     ...actual,
-//     useSearchParams: vi.fn(() => [mockSearchParams, setSearchParamsMock]),
-//   };
-// });
+vi.mock('react-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router')>();
+  return {
+    ...actual,
+    useSearchParams: vi.fn(() => [mockSearchParams, setSearchParamsMock]),
+  };
+});
 
-// describe('Search component', () => {
-//   beforeEach(() => {
-//     localStorage.clear();
-//     vi.clearAllMocks();
-//     mockSearchParams = new URLSearchParams();
-//   });
+describe('Search component', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    vi.clearAllMocks();
+    mockSearchParams = new URLSearchParams();
+  });
 
-//   it('should save trimmed query to localStorage on search button click', async () => {
-//     render(
-//       <MemoryRouter initialEntries={['/']}>
-//         <MainPage />
-//       </MemoryRouter>
-//     );
+  it('should save trimmed query to localStorage on search button click', async () => {
+    (useGetCharactersQuery as jest.Mock).mockReturnValue({
+      data: { results: [], info: { pages: 1 } },
+      isFetching: false,
+      error: undefined,
+      isError: false,
+    });
 
-//     const input = screen.getByPlaceholderText('Search...');
-//     const button = screen.getByText('Search');
+    let testSearchParams = new URLSearchParams();
+    const setSearchParams = vi.fn((params) => {
+      testSearchParams = new URLSearchParams(params);
+      rerender(
+        <Provider store={store}>
+          <MemoryRouter initialEntries={['/']}>
+            <MainPage />
+          </MemoryRouter>
+        </Provider>
+      );
+    });
 
-//     fireEvent.change(input, { target: { value: '  rick  ' } });
-//     fireEvent.click(button);
+    vi.mocked(useSearchParams).mockImplementation(() => [
+      testSearchParams,
+      setSearchParams,
+    ]);
 
-//     await waitFor(() => {
-//       expect(localStorage.getItem('search-query')).toBe('rick');
-//       expect(setSearchParamsMock).toHaveBeenCalledWith({
-//         query: 'rick',
-//         page: '1',
-//       });
-//     });
-//   });
+    const { rerender } = render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']}>
+          <MainPage />
+        </MemoryRouter>
+      </Provider>
+    );
 
-//   it('should load query from localStorage', async () => {
-//     const testQuery = 'rick';
-//     const setSearchParamsMock = vi.fn();
+    const input = screen.getByPlaceholderText('Search...');
+    const button = screen.getByText('Search');
 
-//     vi.mocked(useSearchParams).mockReturnValue([
-//       new URLSearchParams({ query: testQuery, page: '1' }),
-//       setSearchParamsMock,
-//     ]);
+    fireEvent.change(input, { target: { value: '  rick  ' } });
+    fireEvent.click(button);
 
-//     localStorage.setItem('search-query', testQuery);
+    await waitFor(() => {
+      expect(localStorage.getItem('search-query')).toBe('rick');
 
-//     render(
-//       <MemoryRouter>
-//         <MainPage />
-//       </MemoryRouter>
-//     );
+      expect(testSearchParams.get('query')).toBe('rick');
+      expect(testSearchParams.get('page')).toBe('1');
+    });
+  });
 
-//     await waitFor(() => {
-//       expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
-//     });
+  it('should load query from localStorage', async () => {
+    const testQuery = 'rick';
+    const setSearchParamsMock = vi.fn();
 
-//     const searchInput = screen.getByPlaceholderText('Search...');
-//     expect(searchInput).toHaveValue(testQuery);
-//     expect(CharacterService.getAllCharacters).toHaveBeenCalledWith(
-//       testQuery,
-//       1
-//     );
-//   });
-// });
+    vi.mocked(useSearchParams).mockReturnValue([
+      new URLSearchParams({ query: testQuery, page: '1' }),
+      setSearchParamsMock,
+    ]);
 
-// describe('useLocalStorage', () => {
-//   it('should load saved value', () => {
-//     localStorage.setItem('test-key', 'test-value');
-//     const { result } = renderHook(() => useLocalStorage('test-key'));
-//     expect(result.current.value).toBe('test-value');
-//   });
-// });
+    localStorage.setItem('search-query', testQuery);
+
+    (useGetCharactersQuery as jest.Mock).mockReturnValue({
+      data: { results: [{ id: 1, name: 'Rick Sanchez' }], info: { pages: 1 } },
+      isFetching: false,
+      isError: false,
+    });
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <MainPage />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+    });
+
+    const searchInput = screen.getByPlaceholderText('Search...');
+    expect(searchInput).toHaveValue(testQuery);
+    expect(useGetCharactersQuery).toHaveBeenCalledWith({
+      name: testQuery,
+      page: 1,
+    });
+
+    expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
+  });
+});
+
+describe('useLocalStorage', () => {
+  it('should load saved value', () => {
+    localStorage.setItem('test-key', 'test-value');
+    const { result } = renderHook(() => useLocalStorage('test-key'));
+    expect(result.current.value).toBe('test-value');
+  });
+});

@@ -1,7 +1,6 @@
 export { Search } from './Search/Search.tsx';
 export { CardList } from './CardList/CardList.tsx';
 export { SearchCard } from './Card/SearchCard/SearchCard.tsx';
-export { ErrorButton } from './ErrorButton/ErrorButton.tsx';
 export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary.tsx';
 export { ErrorBlock } from './ErrorBlock/ErrorBlock.tsx';
 export { Spinner } from './Spinner/Spinner.tsx';
