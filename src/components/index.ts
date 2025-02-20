@@ -1,10 +1,10 @@
 export { Search } from './Search/Search.tsx';
 export { CardList } from './CardList/CardList.tsx';
 export { SearchCard } from './Card/SearchCard/SearchCard.tsx';
-export { ErrorButton } from './ErrorButton/ErrorButton.tsx';
 export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary.tsx';
 export { ErrorBlock } from './ErrorBlock/ErrorBlock.tsx';
 export { Spinner } from './Spinner/Spinner.tsx';
 export { Pagination } from './Pagination/Pagination.tsx';
 export { OverlayWithClose } from './OverlayWithClose/OverlayWithClose.tsx';
 export { DetailedCard } from './Card/DetailedCard/DetailedCard.tsx';
+export { ThemeSwitcher } from './ThemeSwitcher/ThemeSwitcher.tsx';

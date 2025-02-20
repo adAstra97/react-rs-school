@@ -9,18 +9,16 @@ import { describe, beforeEach, vi } from 'vitest';
 import { MainPage } from '../pages';
 import { MemoryRouter, useSearchParams } from 'react-router';
 import { useLocalStorage } from '../hooks/use-local-storage';
-import { CharacterService } from '../services/character.service';
+import { Provider } from 'react-redux';
+import { store, useGetCharactersQuery } from '../redux';
 
-vi.mock('../services/character.service', () => ({
-  CharacterService: {
-    getAllCharacters: vi.fn().mockResolvedValue({
-      data: {
-        info: { pages: 1 },
-        results: [],
-      },
-    }),
-  },
-}));
+vi.mock('../redux/charactersApi', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../redux/charactersApi')>();
+  return {
+    ...mod,
+    useGetCharactersQuery: vi.fn(),
+  };
+});
 
 let mockSearchParams = new URLSearchParams();
 const setSearchParamsMock = vi.fn((params: Record<string, string>) => {
@@ -43,10 +41,36 @@ describe('Search component', () => {
   });
 
   it('should save trimmed query to localStorage on search button click', async () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <MainPage />
-      </MemoryRouter>
+    (useGetCharactersQuery as jest.Mock).mockReturnValue({
+      data: { results: [], info: { pages: 1 } },
+      isFetching: false,
+      error: undefined,
+      isError: false,
+    });
+
+    let testSearchParams = new URLSearchParams();
+    const setSearchParams = vi.fn((params) => {
+      testSearchParams = new URLSearchParams(params);
+      rerender(
+        <Provider store={store}>
+          <MemoryRouter initialEntries={['/']}>
+            <MainPage />
+          </MemoryRouter>
+        </Provider>
+      );
+    });
+
+    vi.mocked(useSearchParams).mockImplementation(() => [
+      testSearchParams,
+      setSearchParams,
+    ]);
+
+    const { rerender } = render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']}>
+          <MainPage />
+        </MemoryRouter>
+      </Provider>
     );
 
     const input = screen.getByPlaceholderText('Search...');
@@ -57,10 +81,9 @@ describe('Search component', () => {
 
     await waitFor(() => {
       expect(localStorage.getItem('search-query')).toBe('rick');
-      expect(setSearchParamsMock).toHaveBeenCalledWith({
-        query: 'rick',
-        page: '1',
-      });
+
+      expect(testSearchParams.get('query')).toBe('rick');
+      expect(testSearchParams.get('page')).toBe('1');
     });
   });
 
@@ -75,10 +98,18 @@ describe('Search component', () => {
 
     localStorage.setItem('search-query', testQuery);
 
+    (useGetCharactersQuery as jest.Mock).mockReturnValue({
+      data: { results: [{ id: 1, name: 'Rick Sanchez' }], info: { pages: 1 } },
+      isFetching: false,
+      isError: false,
+    });
+
     render(
-      <MemoryRouter>
-        <MainPage />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter>
+          <MainPage />
+        </MemoryRouter>
+      </Provider>
     );
 
     await waitFor(() => {
@@ -87,10 +118,12 @@ describe('Search component', () => {
 
     const searchInput = screen.getByPlaceholderText('Search...');
     expect(searchInput).toHaveValue(testQuery);
-    expect(CharacterService.getAllCharacters).toHaveBeenCalledWith(
-      testQuery,
-      1
-    );
+    expect(useGetCharactersQuery).toHaveBeenCalledWith({
+      name: testQuery,
+      page: 1,
+    });
+
+    expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
   });
 });
 

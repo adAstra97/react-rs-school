@@ -1,5 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { Character } from '../../shared/types/character.interface';
+import { useEffect } from 'react';
 import {
   Outlet,
   useLocation,
@@ -7,7 +6,6 @@ import {
   useOutlet,
   useSearchParams,
 } from 'react-router';
-import { CharacterService } from '../../services/character.service';
 import { handleError } from '../../utils/handle-error';
 import { useLocalStorage } from '../../hooks/use-local-storage';
 import {
@@ -17,13 +15,12 @@ import {
   Search,
   CardList,
   Spinner,
+  ThemeSwitcher,
 } from '../../components';
+import { useGetCharactersQuery } from '../../redux';
+import { Flyout } from '../../components/Flyout/Flyout';
 
-const MainPage: FC = () => {
-  const [items, setItems] = useState<Character[]>([]);
-  const [totalPages, setTotalPages] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const MainPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { value: savedQuery, setValue: setSavedQuery } =
     useLocalStorage('search-query');
@@ -34,31 +31,17 @@ const MainPage: FC = () => {
   const searchQuery = searchParams.get('query') || '';
   const currentPage = Number(searchParams.get('page')) || 1;
 
-  const searchCharacters = useCallback(
-    async (query: string, page: number) => {
-      setIsLoading(true);
-      setError(null);
-      setSavedQuery(query);
+  const { data, isFetching, error, isError } = useGetCharactersQuery({
+    name: searchQuery,
+    page: currentPage,
+  });
 
-      try {
-        const {
-          data: { info, results },
-        } = await CharacterService.getAllCharacters(query, page);
-        setItems(results || []);
-        setTotalPages(info.pages);
-      } catch (err) {
-        setError(handleError(err));
-        setTotalPages(null);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [setSavedQuery]
-  );
+  const items = data?.results || [];
+  const totalPages = data?.info.pages || 1;
 
   useEffect(() => {
-    searchCharacters(searchQuery, currentPage);
-  }, [searchQuery, currentPage, searchCharacters]);
+    setSavedQuery(searchQuery);
+  }, [searchQuery, setSavedQuery]);
 
   const handlePageChange = (page: number) => {
     setSearchParams({ query: searchQuery, page: String(page) });
@@ -71,9 +54,10 @@ const MainPage: FC = () => {
   };
 
   return (
-    <div className="flex flex-row gap-2 min-h-screen">
+    <div className="flex flex-row min-h-screen bg-mainBackground">
+      <ThemeSwitcher />
       <div
-        className={`${outlet ? 'border-r-2 border-r-stone-600 relative' : ''} mx-auto flex-[1_1_0%] px-5`}
+        className={`${outlet ? 'border-r-2 border-r-stone-500 relative' : ''} mx-auto flex-[1_1_0%] px-5`}
       >
         <OverlayWithClose isOpen={!!outlet} onClose={handleCloseOutlet} />
         <header className="py-5">
@@ -85,13 +69,13 @@ const MainPage: FC = () => {
           />
         </header>
         <main className="max-w-[900px] mx-auto">
-          {isLoading ? (
+          {isFetching ? (
             <Spinner />
-          ) : error ? (
-            <ErrorBlock errorText={error} />
+          ) : isError ? (
+            <ErrorBlock errorText={error ? handleError(error) : ''} />
           ) : (
             <>
-              <CardList items={items} />
+              <CardList items={items || []} />
               {totalPages && (
                 <Pagination
                   currentPage={currentPage}
@@ -103,6 +87,7 @@ const MainPage: FC = () => {
           )}
         </main>
       </div>
+      <Flyout />
       <div className={`${outlet ? 'w-[500px] flex p-8 relative' : ''}`}>
         <Outlet />
       </div>

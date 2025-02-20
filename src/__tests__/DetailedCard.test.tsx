@@ -1,22 +1,9 @@
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
 import { DetailedCard } from '../components';
-import { DetailedCharacterCard } from '../shared/types/types';
+import { mockCharacters } from '../shared/mocks/characters';
 
-const mockCard: DetailedCharacterCard = {
-  id: 1,
-  name: 'Rick Sanchez',
-  image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-  species: 'Human',
-  location: {
-    name: 'Earth',
-    url: 'https://rickandmortyapi.com/api/location/1',
-  },
-  origin: {
-    name: 'Earth',
-    url: 'https://rickandmortyapi.com/api/location/1',
-  },
-};
+const mockCard = mockCharacters[0];
 
 describe('DetailedCard', () => {
   it('should render detailed card data correctly', () => {

@@ -1,20 +1,17 @@
-import { FC } from 'react';
-
 interface OverlayWithCloseProps {
   isOpen: boolean;
   onClose: () => void;
-  opacity?: number;
-  zIndex?: number;
 }
 
-export const OverlayWithClose: FC<OverlayWithCloseProps> = ({
+export const OverlayWithClose = ({
   isOpen,
   onClose,
-}) => {
+}: OverlayWithCloseProps) => {
   if (!isOpen) return null;
 
   return (
     <div
+      role="presentation"
       className={`absolute inset-0 bg-black/50 z-20 cursor-pointer`}
       onClick={onClose}
     />

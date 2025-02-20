@@ -1,31 +1,20 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
 import { CardList } from '../components';
-import { CharacterCard } from '../shared/types/types';
-
-const mockCards: CharacterCard[] = [
-  {
-    id: 1,
-    name: 'Rick Sanchez',
-    image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-    species: 'Human',
-  },
-  {
-    id: 2,
-    name: 'Morty Smith',
-    image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
-    species: 'Human',
-  },
-];
+import { mockCharacters } from '../shared/mocks/characters';
+import { Provider } from 'react-redux';
+import { store } from '../redux';
 
 describe('CardList', () => {
   it('should render correct number of cards', () => {
     render(
-      <BrowserRouter>
-        <CardList items={mockCards} />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <CardList items={mockCharacters} />
+        </BrowserRouter>
+      </Provider>
     );
     const links = screen.getAllByRole('link');
-    expect(links).toHaveLength(mockCards.length);
+    expect(links).toHaveLength(mockCharacters.length);
   });
 });

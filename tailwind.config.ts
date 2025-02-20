@@ -1,7 +1,18 @@
 export default {
-  content: ['./index.html', './src/**/*.{js,jsx}'],
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+  darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        mainBackground: 'var(--main-background)',
+        detailsBackground: 'var(--details-background)',
+        flyoutBackground: 'var(--flyout-background)',
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+        button: 'var(--button)',
+        contrast: 'var(--contrast)',
+        cardOverlay: 'var(--card-overlay)',
+      },
+    },
   },
-  plugins: [],
 };
