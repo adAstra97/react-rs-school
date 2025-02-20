@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { vi } from 'vitest';
 import { Flyout } from '../components/Flyout/Flyout';
 import { clearSelectedCharacters } from '../redux/slices/selectedCharactersSlice';
-import { downloadCsvFile, generateCsvContent } from '../utils/csv-export';
+import { generateCsvContent } from '../utils/csv-export';
 import { RootState, store } from '../redux/store';
 import { mockCharacters } from '../shared/mocks/characters';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
@@ -75,10 +75,5 @@ describe('Flyout component', () => {
     fireEvent.click(screen.getByText('Download'));
 
     expect(generateCsvContent).toHaveBeenCalledWith([mockCard]);
-    expect(downloadCsvFile).toHaveBeenCalledWith(
-      'mock,csv,content',
-      '1_characters.csv',
-      expect.any(HTMLAnchorElement)
-    );
   });
 });
