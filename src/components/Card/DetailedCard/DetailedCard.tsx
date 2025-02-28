@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import HomeIcon from '../../../assets/icons/close.svg';
+import HomeIcon from '/assets/icons/close.svg';
 import { Character } from '../../../shared/types/character.interface';
 
 interface DetailedCardProps {

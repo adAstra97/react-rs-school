@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Link } from 'react-router';
-import HouseIcon from '../../assets/icons/house.svg';
+import HouseIcon from '/assets/icons/house.svg';
 
 const NotFoundPage: FC = () => {
   return (
