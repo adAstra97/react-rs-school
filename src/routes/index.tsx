@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { Route, Routes } from 'react-router';
-import { DetailsPage, MainPage, NotFoundPage } from '../pages';
+import MainPage from '../pages/MainPage/MainPage';
+import DetailsPage from '../pages/DetailsPage/DetailsPage';
+import NotFoundPage from '../pages/NotFoundPage/NotFoundPage';
 
 const AppRoutes: FC = () => {
   return (
