@@ -63,11 +63,11 @@ const config = [
         },
       ],
       '@next/next/no-html-link-for-pages': 'error',
-      '@next/next/no-img-element': 'warn',
+      '@next/next/no-img-element': 'error',
       'react/jsx-key': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/exhaustive-deps': 'error',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

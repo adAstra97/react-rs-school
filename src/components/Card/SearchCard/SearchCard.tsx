@@ -6,6 +6,7 @@ import {
   removeSelectedCharacter,
 } from '../../../redux/slices/selectedCharactersSlice';
 import { Character } from '../../../shared/types/character.interface';
+import Image from 'next/image';
 
 interface SearchCardProps {
   card: Character;
@@ -44,7 +45,7 @@ export const SearchCard = ({ card }: SearchCardProps) => {
         className="h-auto max-h-[200px] rounded-2xl shadow-2xl"
       >
         <div className="relative rounded-2xl overflow-hidden">
-          <img
+          <Image
             className="w-[200px] h-[200px] object-cover object-center transition-opacity group-hover:opacity-100"
             src={image}
             alt={name}

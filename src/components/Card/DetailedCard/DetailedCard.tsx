@@ -21,7 +21,7 @@ export const DetailedCard = ({ character }: DetailedCardProps) => {
       </Link>
       <div className="flex border-primary text-contrast shadow-2xl bg-detailsBackground border-2 rounded-2xl overflow-hidden w-full">
         <div className="flex flex-col flex-1">
-          <img
+          <Image
             className="w-full h-[300px] object-cover object-center"
             src={character.image}
             alt={character.name}
