@@ -5,7 +5,7 @@ import { ThemeProvider } from '../providers/ThemeProvider';
 import { ErrorBoundary } from '../components';
 import { store } from '../redux';
 
-export default function App({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
@@ -25,4 +25,6 @@ export default function App({ Component, pageProps }: AppProps) {
       </ErrorBoundary>
     </>
   );
-}
+};
+
+export default App;

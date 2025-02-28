@@ -1,5 +1,5 @@
+import Image from 'next/image';
 import { Link, useLocation } from 'react-router';
-import HomeIcon from '/assets/icons/close.svg';
 import { Character } from '../../../shared/types/character.interface';
 
 interface DetailedCardProps {
@@ -12,7 +12,12 @@ export const DetailedCard = ({ character }: DetailedCardProps) => {
   return (
     <>
       <Link to={`/${location.search}`} className="close self-start">
-        <img src={HomeIcon} width={40} height={40} alt="close" />
+        <Image
+          src="/assets/icons/close.svg"
+          width={40}
+          height={40}
+          alt="close"
+        />
       </Link>
       <div className="flex border-primary text-contrast shadow-2xl bg-detailsBackground border-2 rounded-2xl overflow-hidden w-full">
         <div className="flex flex-col flex-1">

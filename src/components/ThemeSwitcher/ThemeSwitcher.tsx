@@ -2,7 +2,6 @@ import {
   useTheme,
   useThemeUpdate,
 } from '../../providers/ThemeProvider/ThemeContext';
-import './style.css';
 
 export const ThemeSwitcher = () => {
   const theme = useTheme();
