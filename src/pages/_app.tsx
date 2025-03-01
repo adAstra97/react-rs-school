@@ -3,9 +3,11 @@ import Head from 'next/head';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '../providers/ThemeProvider';
 import { ErrorBoundary } from '../components';
-import { store } from '../redux';
+import { wrapper } from '../redux';
 
 const App = ({ Component, pageProps }: AppProps) => {
+  const { store } = wrapper.useWrappedStore(pageProps);
+
   return (
     <>
       <Head>
