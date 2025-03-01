@@ -1,15 +1,23 @@
-import { useParams } from 'react-router';
 import { DetailedCard, ErrorBlock, Spinner } from '../../components';
 import { useGetCharacterQuery } from '../../redux';
 import { handleError } from '../../utils/handle-error';
+import { useRouter } from 'next/router';
 
-const DetailsPage = () => {
-  const { id } = useParams();
-  const { data, isFetching, error } = useGetCharacterQuery(id || '', {
-    skip: !id,
-  });
+const DetailsPanel = () => {
+  const router = useRouter();
+  const { detailsId } = router.query;
+  const detailsIdParam = Array.isArray(detailsId)
+    ? detailsId[0]
+    : detailsId || '';
 
-  if (!id) {
+  const { data, isFetching, error } = useGetCharacterQuery(
+    detailsIdParam || '',
+    {
+      skip: !detailsIdParam,
+    }
+  );
+
+  if (!detailsIdParam) {
     return <ErrorBlock errorText="Invalid character ID" />;
   }
 
@@ -22,4 +30,4 @@ const DetailsPage = () => {
   );
 };
 
-export default DetailsPage;
+export default DetailsPanel;

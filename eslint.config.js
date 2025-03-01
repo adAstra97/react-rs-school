@@ -68,10 +68,6 @@ const config = [
       '@typescript-eslint/no-explicit-any': 'error',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'error',
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
       'react-compiler/react-compiler': 'error',
     },
   },

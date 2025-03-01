@@ -6,7 +6,7 @@ interface ThemeContextType {
 }
 
 export const ThemeContext = createContext<ThemeContextType>({
-  theme: 'dark',
+  theme: 'lignt',
   toggleTheme: () => {},
 });
 
