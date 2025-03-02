@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { ChangeEvent } from 'react';
+import { useRouter } from 'next/router';
 import {
   addSelectedCharacter,
   removeSelectedCharacter,
 } from '../../../redux/slices/selectedCharactersSlice';
 import { Character } from '../../../shared/types/character.interface';
-import { useRouter } from 'next/router';
 
 interface SearchCardProps {
   card: Character;
@@ -21,7 +21,7 @@ export const SearchCard = ({ card }: SearchCardProps) => {
   const selectedCharacters = useAppSelector(
     (state) => state.selectedCharacters
   );
-  const isSelectedCharacter = selectedCharacters.some(
+  const isSelectedCharacter = selectedCharacters?.some(
     (character) => character.id === id
   );
 
@@ -44,7 +44,7 @@ export const SearchCard = ({ card }: SearchCardProps) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" data-testid="search-card">
       <input
         type="checkbox"
         checked={isSelectedCharacter}

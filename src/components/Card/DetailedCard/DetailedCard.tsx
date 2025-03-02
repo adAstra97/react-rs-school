@@ -11,7 +11,7 @@ export const DetailedCard = ({ character }: DetailedCardProps) => {
 
   return (
     <>
-      <button onClick={handleClose} className="link">
+      <button onClick={handleClose} className="link" data-testid="close-button">
         <Image
           src="/assets/icons/close.svg"
           width={40}
@@ -22,8 +22,9 @@ export const DetailedCard = ({ character }: DetailedCardProps) => {
       <div className="flex border-primary text-contrast shadow-2xl bg-detailsBackground border-2 rounded-2xl overflow-hidden w-full">
         <div className="flex flex-col flex-1">
           <Image
-            width={1200}
-            height={300}
+            width="0"
+            height="0"
+            sizes="100vw"
             className="w-full h-[300px] object-cover object-center"
             src={character.image}
             alt={character.name}

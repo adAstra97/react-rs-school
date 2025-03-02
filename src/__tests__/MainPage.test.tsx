@@ -1,10 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
-import { BrowserRouter } from 'react-router';
-import { MainPage } from '../pages';
-import { useGetCharactersQuery } from '../redux/charactersApi';
-import { store } from '../redux';
 import { Provider } from 'react-redux';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import MainPage from '../pages/index';
+import { useGetCharactersQuery } from '../redux/charactersApi';
+import { makeStore } from '../redux';
+import { createMockRouter } from '../utils/test-helper';
 
 vi.mock('../redux/charactersApi', async (importOriginal) => {
   const mod = await importOriginal<typeof import('../redux/charactersApi')>();
@@ -13,15 +14,6 @@ vi.mock('../redux/charactersApi', async (importOriginal) => {
     useGetCharactersQuery: vi.fn(),
   };
 });
-
-const mockNavigate = vi.fn();
-vi.mock('react-router-dom', () => ({
-  ...vi.importActual('react-router'),
-  useNavigate: () => mockNavigate,
-  useLocation: () => ({
-    search: '?query=rick&page=2',
-  }),
-}));
 
 describe('MainPage', () => {
   beforeEach(() => {
@@ -34,13 +26,21 @@ describe('MainPage', () => {
   });
 
   it('should display error message if no cards are present', async () => {
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <MainPage />
-        </BrowserRouter>
-      </Provider>
+    const mockedRouter = createMockRouter({
+      query: { query: 'rick', page: '2' },
+    });
+
+    const store = makeStore();
+
+    const Wrapper = ({ children }: { children: React.ReactNode }) => (
+      <RouterContext.Provider value={mockedRouter}>
+        <Provider store={store}>{children}</Provider>
+      </RouterContext.Provider>
     );
+
+    render(<MainPage searchQuery="rickkk" currentPage={2} />, {
+      wrapper: Wrapper,
+    });
 
     await waitFor(() => {
       expect(screen.getByText('There is nothing here :(')).toBeInTheDocument();

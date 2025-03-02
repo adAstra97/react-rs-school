@@ -1,20 +1,54 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router';
-import { CardList } from '../components';
-import { mockCharacters } from '../shared/mocks/characters';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { Provider } from 'react-redux';
-import { store } from '../redux';
+import { mockCharacters } from '../shared/mocks/characters';
+import { CardList } from '../components';
+import { makeStore } from '../redux';
+import { createMockRouter } from '../utils/test-helper';
 
-describe('CardList', () => {
+vi.mock('next/image', () => ({
+  default: ({ src, alt }: { src: string; alt: string }) => (
+    <img src={src} alt={alt} />
+  ),
+}));
+
+vi.mock('next/link', () => ({
+  default: ({
+    children,
+    href,
+  }: {
+    children: React.ReactNode;
+    href: string;
+  }) => <a href={href}>{children}</a>,
+}));
+
+describe('CardList Component', () => {
+  let mockedRouter: ReturnType<typeof createMockRouter>;
+  let store: ReturnType<typeof makeStore>;
+
+  beforeEach(() => {
+    mockedRouter = createMockRouter({
+      query: { page: '1', query: 'Rick' },
+    });
+    store = makeStore();
+  });
+
   it('should render correct number of cards', () => {
-    render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <CardList items={mockCharacters} />
-        </BrowserRouter>
-      </Provider>
+    const Wrapper = ({ children }: { children: React.ReactNode }) => (
+      <RouterContext.Provider value={mockedRouter}>
+        <Provider store={store}>{children}</Provider>
+      </RouterContext.Provider>
     );
-    const links = screen.getAllByRole('link');
-    expect(links).toHaveLength(mockCharacters.length);
+
+    render(<CardList items={mockCharacters} />, { wrapper: Wrapper });
+
+    const cards = screen.getAllByTestId('search-card');
+    expect(cards).toHaveLength(mockCharacters.length);
+
+    mockCharacters.forEach((character) => {
+      expect(screen.getByText(character.name)).toBeInTheDocument();
+      expect(screen.getByAltText(character.name)).toBeInTheDocument();
+    });
   });
 });

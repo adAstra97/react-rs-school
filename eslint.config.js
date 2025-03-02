@@ -63,7 +63,7 @@ const config = [
         },
       ],
       '@next/next/no-html-link-for-pages': 'error',
-      '@next/next/no-img-element': 'error',
+      '@next/next/no-img-element': 'off',
       'react/jsx-key': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       'react-hooks/rules-of-hooks': 'error',

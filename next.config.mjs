@@ -7,7 +7,6 @@ const nextConfig = {
       {
         hostname: 'rickandmortyapi.com',
         protocol: 'https',
-        // pathname: '/api/character',
       },
     ],
   },

@@ -1,17 +1,50 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import { BrowserRouter } from 'react-router';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import { Provider } from 'react-redux';
 import { DetailedCard } from '../components';
 import { mockCharacters } from '../shared/mocks/characters';
+import { makeStore } from '../redux';
+import { createMockRouter } from '../utils/test-helper';
+import { Character } from '../shared/types/character.interface';
 
-const mockCard = mockCharacters[0];
+const mockCard = mockCharacters[0] as Character;
 
-describe('DetailedCard', () => {
+vi.mock('next/image', () => ({
+  default: ({ src, alt }: { src: string; alt: string }) => (
+    <img src={src} alt={alt} />
+  ),
+}));
+
+vi.mock('next/link', () => ({
+  default: ({
+    children,
+    href,
+  }: {
+    children: React.ReactNode;
+    href: string;
+  }) => <a href={href}>{children}</a>,
+}));
+
+describe('DetailedCard Component', () => {
+  let mockedRouter: ReturnType<typeof createMockRouter>;
+  let store: ReturnType<typeof makeStore>;
+
+  beforeEach(() => {
+    mockedRouter = createMockRouter({
+      query: { page: '1', query: 'Rick', detailsId: '1' },
+    });
+    store = makeStore();
+  });
+
   it('should render detailed card data correctly', () => {
-    render(
-      <BrowserRouter>
-        <DetailedCard character={mockCard} />
-      </BrowserRouter>
+    const Wrapper = ({ children }: { children: React.ReactNode }) => (
+      <RouterContext.Provider value={mockedRouter}>
+        <Provider store={store}>{children}</Provider>
+      </RouterContext.Provider>
     );
+
+    render(<DetailedCard character={mockCard} />, { wrapper: Wrapper });
 
     expect(screen.getByText(mockCard.name)).toBeInTheDocument();
     expect(screen.getByText(mockCard.species)).toBeInTheDocument();
@@ -22,13 +55,13 @@ describe('DetailedCard', () => {
 
     const locationElement = screen
       .getByText('Last known location:')
-      ?.closest('div');
+      .closest('div');
     expect(locationElement).not.toBeNull();
     expect(
       within(locationElement as HTMLElement).getByText(mockCard.location.name)
     ).toBeInTheDocument();
 
-    const originElement = screen.getByText('First seen in:')?.closest('div');
+    const originElement = screen.getByText('First seen in:').closest('div');
     expect(originElement).not.toBeNull();
     expect(
       within(originElement as HTMLElement).getByText(mockCard.origin.name)
@@ -36,15 +69,23 @@ describe('DetailedCard', () => {
   });
 
   it('should close the component when clicking the close button', () => {
-    render(
-      <BrowserRouter>
-        <DetailedCard character={mockCard} />
-      </BrowserRouter>
+    const Wrapper = ({ children }: { children: React.ReactNode }) => (
+      <RouterContext.Provider value={mockedRouter}>
+        <Provider store={store}>{children}</Provider>
+      </RouterContext.Provider>
     );
 
-    fireEvent.click(screen.getByRole('link'));
+    render(<DetailedCard character={mockCard} />, { wrapper: Wrapper });
 
-    expect(window.location.pathname).toBe('/');
-    expect(window.location.search).toBe(location.search);
+    fireEvent.click(screen.getByTestId('close-button'));
+
+    expect(mockedRouter.push).toHaveBeenCalledWith(
+      {
+        pathname: mockedRouter.pathname,
+        query: { page: '1', query: 'Rick' },
+      },
+      undefined,
+      { shallow: true }
+    );
   });
 });

@@ -1,45 +1,36 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter, useSearchParams } from 'react-router';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import { createMockRouter } from '../utils/test-helper';
 import { Pagination } from '../components';
 
-const MockPagination = ({
-  totalPages,
-}: {
-  currentPage: number;
-  totalPages: number;
-}) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
-
-  const handlePageChange = (page: number) => {
-    setSearchParams({ page: page.toString() });
-  };
-
-  return (
-    <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages}
-      onPageChange={handlePageChange}
-    />
-  );
-};
-
 describe('Pagination', () => {
-  it('should update the URL query parameter when page changes', async () => {
+  it('should update the URL query parameter when page changes', () => {
+    const mockedRouter = createMockRouter({
+      query: { query: 'Rick', page: '1' },
+    });
+
     render(
-      <BrowserRouter>
-        <MockPagination currentPage={1} totalPages={3} />
-      </BrowserRouter>
+      <RouterContext.Provider value={mockedRouter}>
+        <Pagination
+          currentPage={1}
+          totalPages={3}
+          onPageChange={(page) =>
+            mockedRouter.push({
+              pathname: mockedRouter.pathname,
+              query: { ...mockedRouter.query, page: String(page) },
+            })
+          }
+        />
+      </RouterContext.Provider>
     );
 
     const nextButton = screen.getByText('Next ►');
-    const prevButton = screen.getByText('◄ Prev');
-
-    fireEvent.click(nextButton);
-    fireEvent.click(prevButton);
-    fireEvent.click(nextButton);
     fireEvent.click(nextButton);
 
-    expect(location.search).toBe('?page=3');
+    expect(mockedRouter.push).toHaveBeenCalledTimes(1);
+    expect(mockedRouter.push).toHaveBeenCalledWith({
+      pathname: mockedRouter.pathname,
+      query: { query: 'Rick', page: '2' },
+    });
   });
 });

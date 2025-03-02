@@ -1,68 +1,81 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router';
-import { SearchCard } from '../components';
-import { mockCharacters } from '../shared/mocks/characters';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { store } from '../redux';
-import { vi } from 'vitest';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { addSelectedCharacter } from '../redux/slices/selectedCharactersSlice';
+import { Character } from '../shared/types/character.interface';
+import { mockCharacters } from '../shared/mocks/characters';
+import { makeStore } from '../redux';
+import { createMockRouter } from '../utils/test-helper';
+import { SearchCard } from '../components';
 
-const mockCard = mockCharacters[0];
+const mockCard = mockCharacters[0] as Character;
 
-vi.mock('../redux/hooks', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../redux/hooks')>();
-  return {
-    ...actual,
-    useAppDispatch: () => vi.fn(),
-    useAppSelector: vi.fn((fn) => fn(store.getState())),
-  };
-});
+describe('SearchCard', () => {
+  let mockedRouter: ReturnType<typeof createMockRouter>;
+  let store: ReturnType<typeof makeStore>;
 
-describe('Card', () => {
+  beforeEach(() => {
+    mockedRouter = createMockRouter({
+      query: { page: '1', query: 'Rick' },
+    });
+    store = makeStore();
+  });
+
   it('should render card data', () => {
     render(
-      <Provider store={store}>
-        <BrowserRouter>
+      <RouterContext.Provider value={mockedRouter}>
+        <Provider store={store}>
           <SearchCard card={mockCard} />
-        </BrowserRouter>
-      </Provider>
+        </Provider>
+      </RouterContext.Provider>
     );
 
     expect(screen.getByText(mockCard.name)).toBeInTheDocument();
 
     const imgElement = screen.getByRole('img');
+    expect(imgElement).toHaveAttribute('src');
+    expect(imgElement.getAttribute('src')).toContain(
+      encodeURIComponent(mockCard.image)
+    );
 
-    expect(imgElement).toHaveAttribute('src', mockCard.image);
     expect(imgElement).toHaveAttribute('alt', mockCard.name);
     expect(screen.getByText(mockCard.species)).toBeInTheDocument();
   });
 
-  it('should navigate to the detailed card component when clicked', () => {
+  it('should navigate to the detailed card component when clicked', async () => {
     render(
-      <Provider store={store}>
-        <BrowserRouter>
+      <RouterContext.Provider value={mockedRouter}>
+        <Provider store={store}>
           <SearchCard card={mockCard} />
-        </BrowserRouter>
-      </Provider>
+        </Provider>
+      </RouterContext.Provider>
     );
 
-    fireEvent.click(screen.getByRole('link'));
+    fireEvent.click(screen.getByRole('button'));
 
-    expect(window.location.pathname).toBe(`/details/${mockCard.id}`);
+    await waitFor(() => {
+      expect(mockedRouter.push).toHaveBeenCalledWith(
+        {
+          query: { page: '1', query: 'Rick', detailsId: mockCard.id },
+        },
+        undefined,
+        { shallow: true }
+      );
+    });
   });
 
   it('should reflect selection state from store', () => {
     store.dispatch(addSelectedCharacter(mockCard));
 
-    const { getByRole } = render(
-      <Provider store={store}>
-        <BrowserRouter>
+    render(
+      <RouterContext.Provider value={mockedRouter}>
+        <Provider store={store}>
           <SearchCard card={mockCard} />
-        </BrowserRouter>
-      </Provider>
+        </Provider>
+      </RouterContext.Provider>
     );
 
-    const checkbox = getByRole('checkbox') as HTMLInputElement;
+    const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
     expect(checkbox.checked).toBe(true);
   });
 });
