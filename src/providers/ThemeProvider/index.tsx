@@ -1,3 +1,5 @@
+'use client';
+
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { useLocalStorage } from '../../hooks/use-local-storage';
 import { ThemeContext } from './ThemeContext';

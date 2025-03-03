@@ -8,7 +8,7 @@ import {
 import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { Provider } from 'react-redux';
 import { vi } from 'vitest';
-import MainPage from '../pages';
+import MainPage from '../page-last';
 import { useGetCharactersQuery } from '../redux/charactersApi';
 import { createMockRouter } from '../utils/test-helper';
 import { makeStore } from '../redux';

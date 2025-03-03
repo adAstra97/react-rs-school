@@ -11,6 +11,7 @@ export const Spinner = () => {
         height={100}
         src="/assets/icons/spinner.svg"
         alt="loading"
+        priority={true}
       />
     </div>
   );

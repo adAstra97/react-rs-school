@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { createMockRouter } from '../utils/test-helper';
-import Custom500 from '../pages/500';
-import NotFoundPage from '../pages/404';
+import Custom500 from '../page-last/500';
+import NotFoundPage from '../page-last/404';
 
 describe('Error pages', () => {
   it('should show 404 page for unknown route', () => {

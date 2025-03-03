@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { Provider } from 'react-redux';
 import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
-import MainPage from '../pages/index';
+import MainPage from '../page-last/index';
 import { useGetCharactersQuery } from '../redux/charactersApi';
 import { makeStore } from '../redux';
 import { createMockRouter } from '../utils/test-helper';
