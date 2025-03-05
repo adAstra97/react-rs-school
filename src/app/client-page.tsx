@@ -19,6 +19,7 @@ import {
 import { useLocalStorage } from '../hooks/use-local-storage';
 import { useEffect, useState } from 'react';
 import { handleError } from '../utils/handle-error';
+import { useDetailsLoading } from '../hooks/use-details-loading';
 
 interface ClientPageProps {
   charactersData: CharacterResponse;
@@ -37,6 +38,7 @@ const ClientPage = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const detailsId = searchParams.get('detailsId');
+  const { isDetailsLoading } = useDetailsLoading(detailsId);
   const { value: savedQuery, setValue: setSavedQuery } =
     useLocalStorage('search-query');
 
@@ -96,9 +98,19 @@ const ClientPage = ({
         </main>
       </div>
       <Flyout />
-      <div className={`${detailsId && 'w-[500px]'} flex p-8 relative`}>
+      <div
+        className={`${detailsId && 'w-[500px]'} flex p-8 relative justify-center`}
+      >
         {detailsId && characterDetails && (
-          <DetailsPanel character={characterDetails} />
+          <>
+            {isDetailsLoading ? (
+              <Spinner />
+            ) : (
+              <div className="details-panel-fade flex">
+                <DetailsPanel character={characterDetails} />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

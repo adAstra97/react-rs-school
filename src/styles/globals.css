@@ -126,3 +126,17 @@ input:checked + .slider:before {
   transform: translateX(0);
   transition: all 0.3s ease-out;
 }
+
+.details-panel-fade {
+  animation: fadeIn 700ms ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
