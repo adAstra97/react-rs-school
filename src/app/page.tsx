@@ -1,12 +1,14 @@
 import { CharacterService } from '../services/character.service';
 import ClientPage from './client-page';
 
-interface SearchParams {
-  searchParams?: Record<string, string | string[] | undefined>;
+interface PageProps {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }
 
-const MainPage = async ({ searchParams = {} }: SearchParams) => {
-  const { query, page, detailsId } = await searchParams;
+const MainPage = async ({ searchParams }: PageProps) => {
+  const resolvedParams = (await searchParams) ?? {};
+
+  const { query, page, detailsId } = resolvedParams;
   const searchQuery = query?.toString() || '';
   const currentPage = Number(page) || 1;
   const detailsIdString = detailsId?.toString();
