@@ -1,19 +1,21 @@
-// import { useCloseDetails } from '../../hooks/use-close-details';
+'use client';
 
-// interface OverlayWithCloseProps {
-//   isOpen: boolean;
-// }
+import { useCloseDetails } from '../../hooks/use-close-details';
 
-// export const OverlayWithClose = ({ isOpen }: OverlayWithCloseProps) => {
-//   const handleClose = useCloseDetails();
+interface OverlayWithCloseProps {
+  isOpen: boolean;
+}
 
-//   if (!isOpen) return null;
+export const OverlayWithClose = ({ isOpen }: OverlayWithCloseProps) => {
+  const handleClose = useCloseDetails();
 
-//   return (
-//     <div
-//       role="presentation"
-//       className={`absolute inset-0 bg-black/50 z-20 cursor-pointer`}
-//       onClick={handleClose}
-//     />
-//   );
-// };
+  if (!isOpen) return null;
+
+  return (
+    <div
+      role="presentation"
+      className={`absolute inset-0 bg-black/50 z-20 cursor-pointer`}
+      onClick={handleClose}
+    />
+  );
+};

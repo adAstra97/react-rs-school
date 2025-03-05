@@ -117,3 +117,12 @@ input:checked + .slider:before {
     inset -3px -2px 5px -2px #f7e283,
     inset -10px -4px 0 0 #fbeca3;
 }
+.details-panel-enter {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.details-panel-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.3s ease-out;
+}

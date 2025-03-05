@@ -99,30 +99,3 @@
 //     </div>
 //   );
 // };
-
-// export default MainPage;
-
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) => async (context) => {
-//     const { page, query, detailsId } = context.query;
-//     const searchQuery = typeof query === 'string' ? query : '';
-//     const currentPage = Number(page) || 1;
-
-//     await store.dispatch(
-//       getCharacters.initiate({ name: searchQuery, page: currentPage })
-//     );
-
-//     if (detailsId) {
-//       await store.dispatch(getCharacter.initiate(detailsId.toString()));
-//     }
-
-//     await Promise.all(store.dispatch(getRunningQueriesThunk()));
-
-//     return {
-//       props: {
-//         searchQuery,
-//         currentPage,
-//       },
-//     };
-//   }
-// );

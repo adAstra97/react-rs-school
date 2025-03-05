@@ -1,37 +1,39 @@
-// import { useState, useEffect } from 'react';
-// import { useLocalStorage } from '../../hooks/use-local-storage';
+'use client';
 
-// interface SearchProps {
-//   searchQuery: string;
-//   onSearch: (query: string) => void;
-// }
+import { useState, useEffect } from 'react';
+import { useLocalStorage } from '../../hooks/use-local-storage';
 
-// export const Search = ({ searchQuery, onSearch }: SearchProps) => {
-//   const [localQuery, setLocalQuery] = useState(searchQuery);
-//   const { setValue: setSavedQuery } = useLocalStorage('search-query');
+interface SearchProps {
+  searchQuery: string;
+  onSearch: (query: string) => void;
+}
 
-//   useEffect(() => {
-//     setLocalQuery(searchQuery);
-//   }, [searchQuery]);
+export const Search = ({ searchQuery, onSearch }: SearchProps) => {
+  const [localQuery, setLocalQuery] = useState(searchQuery);
+  const { setValue: setSavedQuery } = useLocalStorage('search-query');
 
-//   const handleSearch = () => {
-//     const trimmedQuery = localQuery.trim();
-//     onSearch(trimmedQuery);
-//     setSavedQuery(trimmedQuery);
-//   };
+  useEffect(() => {
+    setLocalQuery(searchQuery);
+  }, [searchQuery]);
 
-//   return (
-//     <div className="flex items-center justify-center gap-2 max-w-[900px] w-[30vw] mx-auto">
-//       <input
-//         className="w-full border-2 bg-detailsBackground placeholder:text-orange-400 border-button rounded-md p-2 min-w-[200px] text-sm text-primary focus:outline-none"
-//         type="search"
-//         value={localQuery}
-//         placeholder="Search..."
-//         onChange={(e) => setLocalQuery(e.target.value)}
-//       />
-//       <button className="text-lg" type="button" onClick={handleSearch}>
-//         Search
-//       </button>
-//     </div>
-//   );
-// };
+  const handleSearch = () => {
+    const trimmedQuery = localQuery.trim();
+    onSearch(trimmedQuery);
+    setSavedQuery(trimmedQuery);
+  };
+
+  return (
+    <div className="flex items-center justify-center gap-2 max-w-[900px] w-[30vw] mx-auto">
+      <input
+        className="w-full border-2 bg-detailsBackground placeholder:text-orange-400 border-button rounded-md p-2 min-w-[200px] text-sm text-primary focus:outline-none"
+        type="search"
+        value={localQuery}
+        placeholder="Search..."
+        onChange={(e) => setLocalQuery(e.target.value)}
+      />
+      <button className="text-lg" type="button" onClick={handleSearch}>
+        Search
+      </button>
+    </div>
+  );
+};

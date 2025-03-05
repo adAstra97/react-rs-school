@@ -1,33 +1,20 @@
-// import { DetailedCard, ErrorBlock, Spinner } from '../../components';
-// import { useGetCharacterQuery } from '../../redux';
-// import { handleError } from '../../utils/handle-error';
-// import { useRouter } from 'next/router';
+'use client';
 
-// const DetailsPanel = () => {
-//   const router = useRouter();
-//   const { detailsId } = router.query;
-//   const detailsIdParam = Array.isArray(detailsId)
-//     ? detailsId[0]
-//     : detailsId || '';
+import { DetailedCard, ErrorBlock } from '../../components';
+import { Character } from '../../shared/types/character.interface';
+import { handleError } from '../../utils/handle-error';
 
-//   const { data, isFetching, error } = useGetCharacterQuery(
-//     detailsIdParam || '',
-//     {
-//       skip: !detailsIdParam,
-//     }
-//   );
-
-//   if (!detailsIdParam) {
-//     return <ErrorBlock errorText="Invalid character ID" />;
-//   }
-
-//   return (
-//     <div className="flex-1 flex justify-center flex-col gap-2 items-center">
-//       {isFetching && <Spinner />}
-//       {error && <ErrorBlock errorText={handleError(error)} />}
-//       {!isFetching && !error && data && <DetailedCard character={data} />}
-//     </div>
-//   );
-// };
-
-// export default DetailsPanel;
+interface DetailedPanelProps {
+  character: Character;
+}
+export const DetailsPanel = ({ character }: DetailedPanelProps) => {
+  return (
+    <div className="flex-1 flex justify-center flex-col gap-2 items-center">
+      {'error' in character ? (
+        <ErrorBlock errorText={handleError(character.error)} />
+      ) : (
+        <DetailedCard character={character} />
+      )}
+    </div>
+  );
+};

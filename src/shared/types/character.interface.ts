@@ -19,9 +19,11 @@ export interface Character {
   episode: string[];
   url: string;
   created: string;
+  error?: string;
 }
 
 export interface CharacterResponse {
-  info: Info;
-  results: Character[];
+  info?: Info;
+  results?: Character[];
+  error?: string;
 }
