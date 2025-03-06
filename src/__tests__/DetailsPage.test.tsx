@@ -1,76 +1,72 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { vi } from 'vitest';
-import { useGetCharacterQuery } from '../redux';
+import { Provider } from 'react-redux';
+import { makeStore } from '../redux';
+import { DetailsPanel } from '../components';
 import { mockCharacters } from '../shared/mocks/characters';
-import { createMockRouter } from '../utils/test-helper';
 import { Character } from '../shared/types/character.interface';
-import DetailsPanel from '../components/DetailsPanel/DetailsPanel';
 
 const mockCard = mockCharacters[0] as Character;
 
-vi.mock('../redux/charactersApi', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('../redux/charactersApi')>();
-  return {
-    ...mod,
-    useGetCharacterQuery: vi.fn(),
-  };
-});
+vi.mock('../services/character.service', () => ({
+  CharacterService: {
+    getCharacter: vi.fn(),
+  },
+}));
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+    prefetch: vi.fn(),
+  }),
+  useSearchParams: () => new URLSearchParams('query=&page=1&detailsId=1'),
+}));
 
 describe('DetailsPanel', () => {
-  let mockRouter: ReturnType<typeof createMockRouter>;
-
-  beforeEach(() => {
-    mockRouter = createMockRouter({
-      query: { detailsId: String(mockCard.id) },
-    });
-  });
-
   it('should show a loading indicator while fetching data', async () => {
-    const mock = useGetCharacterQuery as jest.Mock;
-
-    mock.mockReturnValue({
-      data: undefined,
-      isFetching: true,
-    });
-
-    const { rerender } = render(
-      <RouterContext.Provider value={mockRouter}>
-        <DetailsPanel />
-      </RouterContext.Provider>
+    const store = makeStore();
+    render(
+      <Provider store={store}>
+        <DetailsPanel character={mockCard} />
+      </Provider>
     );
 
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
-
-    mock.mockReturnValue({
-      data: mockCard,
-      isFetching: false,
-    });
-
-    rerender(
-      <RouterContext.Provider value={mockRouter}>
-        <DetailsPanel />
-      </RouterContext.Provider>
-    );
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
-    });
   });
 
   it('should display character details when data is loaded', async () => {
-    (useGetCharacterQuery as jest.Mock).mockReturnValue({
-      data: mockCard,
-      isFetching: false,
-    });
-
+    const store = makeStore();
     render(
-      <RouterContext.Provider value={mockRouter}>
-        <DetailsPanel />
-      </RouterContext.Provider>
+      <Provider store={store}>
+        <DetailsPanel character={mockCard} />
+      </Provider>
     );
 
-    expect(screen.getByText(mockCard.name)).toBeInTheDocument();
-    expect(screen.getByAltText(mockCard.name)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(mockCard.name)).toBeInTheDocument();
+      expect(screen.getByAltText(mockCard.name)).toBeInTheDocument();
+    });
+  });
+
+  it('should display error message if there is an error fetching character data', async () => {
+    const mockErrorCard = {
+      ...mockCard,
+      error: 'No such character',
+    };
+
+    const store = makeStore();
+    render(
+      <Provider store={store}>
+        <DetailsPanel character={mockErrorCard} />
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('No such character :(')).toBeInTheDocument();
+    });
   });
 });

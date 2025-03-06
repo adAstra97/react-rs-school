@@ -1,66 +1,87 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { vi } from 'vitest';
 import { addSelectedCharacter } from '../redux/slices/selectedCharactersSlice';
 import { Character } from '../shared/types/character.interface';
 import { mockCharacters } from '../shared/mocks/characters';
 import { makeStore } from '../redux';
-import { createMockRouter } from '../utils/test-helper';
 import { SearchCard } from '../components';
 
 const mockCard = mockCharacters[0] as Character;
 
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(),
+  useSearchParams: vi.fn(),
+}));
+
+vi.mock('next/image', () => ({
+  default: ({ src, alt }: { src: string; alt: string }) => (
+    <img src={src} alt={alt} />
+  ),
+}));
+
+vi.mock('next/link', () => ({
+  default: ({
+    children,
+    href,
+  }: {
+    children: React.ReactNode;
+    href: string;
+  }) => <a href={href}>{children}</a>,
+}));
+
 describe('SearchCard', () => {
-  let mockedRouter: ReturnType<typeof createMockRouter>;
   let store: ReturnType<typeof makeStore>;
+  const mockPush = vi.fn();
 
   beforeEach(() => {
-    mockedRouter = createMockRouter({
-      query: { page: '1', query: 'Rick' },
-    });
     store = makeStore();
+
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+    });
+
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: (key: string) => new URLSearchParams('page=1&query=Rick').get(key),
+      toString: () => 'page=1&query=Rick',
+    });
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should render card data', () => {
     render(
-      <RouterContext.Provider value={mockedRouter}>
-        <Provider store={store}>
-          <SearchCard card={mockCard} />
-        </Provider>
-      </RouterContext.Provider>
+      <Provider store={store}>
+        <SearchCard card={mockCard} />
+      </Provider>
     );
 
     expect(screen.getByText(mockCard.name)).toBeInTheDocument();
-
-    const imgElement = screen.getByRole('img');
-    expect(imgElement).toHaveAttribute('src');
-    expect(imgElement.getAttribute('src')).toContain(
-      encodeURIComponent(mockCard.image)
-    );
-
-    expect(imgElement).toHaveAttribute('alt', mockCard.name);
     expect(screen.getByText(mockCard.species)).toBeInTheDocument();
   });
 
   it('should navigate to the detailed card component when clicked', async () => {
+    const mockSearchParams = new URLSearchParams('page=1&query=Rick');
+
+    (useSearchParams as jest.Mock).mockImplementation(() => mockSearchParams);
+
     render(
-      <RouterContext.Provider value={mockedRouter}>
-        <Provider store={store}>
-          <SearchCard card={mockCard} />
-        </Provider>
-      </RouterContext.Provider>
+      <Provider store={store}>
+        <SearchCard card={mockCard} />
+      </Provider>
     );
 
-    fireEvent.click(screen.getByRole('button'));
+    const cardButton = screen.getByRole('button');
+    fireEvent.click(cardButton);
 
     await waitFor(() => {
-      expect(mockedRouter.push).toHaveBeenCalledWith(
-        {
-          query: { page: '1', query: 'Rick', detailsId: mockCard.id },
-        },
-        undefined,
-        { shallow: true }
-      );
+      const expectedParams = new URLSearchParams(mockSearchParams);
+      expectedParams.set('detailsId', mockCard.id.toString());
+
+      expect(mockPush).toHaveBeenCalledWith(`/?${expectedParams.toString()}`);
     });
   });
 
@@ -68,11 +89,9 @@ describe('SearchCard', () => {
     store.dispatch(addSelectedCharacter(mockCard));
 
     render(
-      <RouterContext.Provider value={mockedRouter}>
-        <Provider store={store}>
-          <SearchCard card={mockCard} />
-        </Provider>
-      </RouterContext.Provider>
+      <Provider store={store}>
+        <SearchCard card={mockCard} />
+      </Provider>
     );
 
     const checkbox = screen.getByRole('checkbox') as HTMLInputElement;

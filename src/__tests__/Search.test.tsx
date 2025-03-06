@@ -5,56 +5,71 @@ import {
   waitFor,
   renderHook,
 } from '@testing-library/react';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
-import { Provider } from 'react-redux';
 import { vi } from 'vitest';
-import MainPage from '../page-last';
-import { useGetCharactersQuery } from '../redux/charactersApi';
-import { createMockRouter } from '../utils/test-helper';
+import { Provider } from 'react-redux';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { CharacterService } from '../services/character.service';
 import { makeStore } from '../redux';
 import { useLocalStorage } from '../hooks/use-local-storage';
+import MainPage from '../app/page';
 
-vi.mock('../redux/charactersApi', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('../redux/charactersApi')>();
-  return {
-    ...mod,
-    useGetCharactersQuery: vi.fn(),
-  };
-});
+vi.mock('../services/character.service', () => ({
+  CharacterService: {
+    getAllCharacters: vi.fn(),
+    getCharacter: vi.fn(),
+  },
+}));
 
-vi.mock('../hooks/use-local-storage', () => {
-  const actual = vi.importActual('../hooks/use-local-storage');
-  return actual;
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+  })),
+  useSearchParams: vi.fn(() => new URLSearchParams()),
+}));
+
+const mockSetItem = vi.fn();
+const mockGetItem = vi.fn();
+
+beforeAll(() => {
+  Object.defineProperty(window, 'localStorage', {
+    value: {
+      setItem: mockSetItem,
+      getItem: mockGetItem,
+      clear: vi.fn(),
+    },
+    writable: true,
+  });
 });
 
 describe('Search component', () => {
-  let mockedRouter: ReturnType<typeof createMockRouter>;
   let store: ReturnType<typeof makeStore>;
+  const mockPush = vi.fn();
 
   beforeEach(() => {
-    localStorage.clear();
-    vi.clearAllMocks();
-    mockedRouter = createMockRouter({
-      query: {},
-    });
     store = makeStore();
+    vi.clearAllMocks();
+
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+    });
+
+    (useSearchParams as jest.Mock).mockImplementation(
+      () => new URLSearchParams()
+    );
   });
 
   it('should save trimmed query to localStorage on search button click', async () => {
-    (useGetCharactersQuery as jest.Mock).mockReturnValue({
-      data: { results: [], info: { pages: 1 } },
-      isFetching: false,
-      error: undefined,
-      isError: false,
+    (CharacterService.getAllCharacters as jest.Mock).mockResolvedValue({
+      results: [],
+      info: { pages: 1 },
     });
 
-    render(
-      <Provider store={store}>
-        <RouterContext.Provider value={mockedRouter}>
-          <MainPage searchQuery="" currentPage={1} />
-        </RouterContext.Provider>
-      </Provider>
-    );
+    const props = {
+      searchParams: Promise.resolve({ query: '', page: '1' }),
+    };
+    const Result = await MainPage(props);
+    render(<Provider store={store}>{Result}</Provider>);
 
     const input = screen.getByPlaceholderText('Search...');
     const button = screen.getByText('Search');
@@ -62,43 +77,38 @@ describe('Search component', () => {
     fireEvent.change(input, { target: { value: '  rick  ' } });
     fireEvent.click(button);
 
-    await waitFor(() =>
-      expect(localStorage.getItem('search-query')).toBe('rick')
-    );
+    await waitFor(() => {
+      expect(mockSetItem).toHaveBeenCalledWith('search-query', 'rick');
+      expect(mockPush).toHaveBeenCalledWith('/?query=rick&page=1');
+    });
   });
 
   it('should load query from localStorage', async () => {
-    const testQuery = 'rick';
-
-    (useGetCharactersQuery as jest.Mock).mockReturnValue({
-      data: { results: [{ id: 1, name: 'Rick Sanchez' }], info: { pages: 1 } },
-      isFetching: false,
-      error: undefined,
-      isError: false,
+    (CharacterService.getAllCharacters as jest.Mock).mockResolvedValue({
+      results: [{ id: 1, name: 'Rick Sanchez' }],
+      info: { pages: 1 },
     });
 
-    render(
-      <Provider store={store}>
-        <RouterContext.Provider value={mockedRouter}>
-          <MainPage searchQuery={testQuery} currentPage={1} />
-        </RouterContext.Provider>
-      </Provider>
-    );
+    const props = {
+      searchParams: Promise.resolve({ query: 'rick', page: '1' }),
+    };
+    const Result = await MainPage(props);
+    render(<Provider store={store}>{Result}</Provider>);
 
     await waitFor(() => {
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+      const searchInput = screen.getByPlaceholderText('Search...');
+      expect(searchInput).toHaveValue('rick');
+      expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
     });
-
-    const searchInput = screen.getByPlaceholderText('Search...');
-    expect(searchInput).toHaveValue(testQuery);
-    expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
   });
 });
 
 describe('useLocalStorage', () => {
   it('should load saved value', () => {
-    localStorage.setItem('test-key', 'test-value');
+    const testValue = 'test-value';
+    mockGetItem.mockImplementation(() => testValue);
+
     const { result } = renderHook(() => useLocalStorage('test-key'));
-    expect(result.current.value).toBe('test-value');
+    expect(result.current.value).toBe(testValue);
   });
 });

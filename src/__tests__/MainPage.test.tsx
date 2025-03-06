@@ -1,46 +1,38 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { Provider } from 'react-redux';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
-import MainPage from '../page-last/index';
-import { useGetCharactersQuery } from '../redux/charactersApi';
 import { makeStore } from '../redux';
-import { createMockRouter } from '../utils/test-helper';
+import MainPage from '../app/page';
 
-vi.mock('../redux/charactersApi', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('../redux/charactersApi')>();
-  return {
-    ...mod,
-    useGetCharactersQuery: vi.fn(),
-  };
-});
+vi.mock('../services/character.service', () => ({
+  CharacterService: {
+    getAllCharacters: vi.fn().mockResolvedValue({
+      error: 'There is nothing here',
+    }),
+  },
+}));
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+    prefetch: vi.fn(),
+  }),
+  useSearchParams: () => new URLSearchParams('query=12345&page=1'),
+}));
 
 describe('MainPage', () => {
-  beforeEach(() => {
-    (useGetCharactersQuery as jest.Mock).mockReturnValue({
-      data: undefined,
-      error: { data: { error: 'There is nothing here' } },
-      isFetching: false,
-      isError: true,
-    });
-  });
-
   it('should display error message if no cards are present', async () => {
-    const mockedRouter = createMockRouter({
-      query: { query: 'rick', page: '2' },
-    });
-
     const store = makeStore();
 
-    const Wrapper = ({ children }: { children: React.ReactNode }) => (
-      <RouterContext.Provider value={mockedRouter}>
-        <Provider store={store}>{children}</Provider>
-      </RouterContext.Provider>
-    );
-
-    render(<MainPage searchQuery="rickkk" currentPage={2} />, {
-      wrapper: Wrapper,
-    });
+    const props = {
+      searchParams: Promise.resolve({ query: '12345', page: '1' }),
+    };
+    const Result = await MainPage(props);
+    render(<Provider store={store}>{Result}</Provider>);
 
     await waitFor(() => {
       expect(screen.getByText('There is nothing here :(')).toBeInTheDocument();

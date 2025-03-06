@@ -1,11 +1,15 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { Provider } from 'react-redux';
-import { mockCharacters } from '../shared/mocks/characters';
+import { useSearchParams } from 'next/navigation';
 import { CardList } from '../components';
+import { mockCharacters } from '../shared/mocks/characters';
 import { makeStore } from '../redux';
-import { createMockRouter } from '../utils/test-helper';
+
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(),
+  useSearchParams: vi.fn(),
+}));
 
 vi.mock('next/image', () => ({
   default: ({ src, alt }: { src: string; alt: string }) => (
@@ -24,24 +28,27 @@ vi.mock('next/link', () => ({
 }));
 
 describe('CardList Component', () => {
-  let mockedRouter: ReturnType<typeof createMockRouter>;
   let store: ReturnType<typeof makeStore>;
 
   beforeEach(() => {
-    mockedRouter = createMockRouter({
-      query: { page: '1', query: 'Rick' },
-    });
     store = makeStore();
+
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: (key: string) => new URLSearchParams('page=1&query=Rick').get(key),
+      toString: () => 'page=1&query=Rick',
+    });
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should render correct number of cards', () => {
-    const Wrapper = ({ children }: { children: React.ReactNode }) => (
-      <RouterContext.Provider value={mockedRouter}>
-        <Provider store={store}>{children}</Provider>
-      </RouterContext.Provider>
+    render(
+      <Provider store={store}>
+        <CardList items={mockCharacters} />
+      </Provider>
     );
-
-    render(<CardList items={mockCharacters} />, { wrapper: Wrapper });
 
     const cards = screen.getAllByTestId('search-card');
     expect(cards).toHaveLength(mockCharacters.length);

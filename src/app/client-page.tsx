@@ -19,7 +19,6 @@ import {
 import { useLocalStorage } from '../hooks/use-local-storage';
 import { useEffect, useState } from 'react';
 import { handleError } from '../utils/handle-error';
-import { useDetailsLoading } from '../hooks/use-details-loading';
 
 interface ClientPageProps {
   charactersData: CharacterResponse;
@@ -38,7 +37,6 @@ const ClientPage = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const detailsId = searchParams.get('detailsId');
-  const { isDetailsLoading } = useDetailsLoading(detailsId);
   const { value: savedQuery, setValue: setSavedQuery } =
     useLocalStorage('search-query');
 
@@ -75,13 +73,11 @@ const ClientPage = ({
         className={`${detailsId ? 'border-r-2 border-r-stone-500 relative' : ''} mx-auto flex-[1_1_0%] px-5`}
       >
         <OverlayWithClose isOpen={!!detailsId} />
-        <header className="py-5">
-          <Search searchQuery={savedQuery} onSearch={handleSearch} />
-        </header>
+        <Search searchQuery={savedQuery} onSearch={handleSearch} />
         <main className="max-w-[900px] mx-auto">
           {isLoading ? (
             <Spinner />
-          ) : 'error' in charactersData ? (
+          ) : charactersData?.error ? (
             <ErrorBlock errorText={handleError(charactersData.error)} />
           ) : (
             <>
@@ -102,15 +98,7 @@ const ClientPage = ({
         className={`${detailsId && 'w-[500px]'} flex p-8 relative justify-center`}
       >
         {detailsId && characterDetails && (
-          <>
-            {isDetailsLoading ? (
-              <Spinner />
-            ) : (
-              <div className="details-panel-fade flex">
-                <DetailsPanel character={characterDetails} />
-              </div>
-            )}
-          </>
+          <DetailsPanel character={characterDetails} />
         )}
       </div>
     </div>

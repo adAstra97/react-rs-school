@@ -1,36 +1,38 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
-import { createMockRouter } from '../utils/test-helper';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { vi } from 'vitest';
 import { Pagination } from '../components';
+
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
+  useSearchParams: vi.fn(() => new URLSearchParams('query=Rick&page=1')),
+}));
 
 describe('Pagination', () => {
   it('should update the URL query parameter when page changes', () => {
-    const mockedRouter = createMockRouter({
-      query: { query: 'Rick', page: '1' },
-    });
+    const mockPush = vi.fn();
+    const mockSearchParams = new URLSearchParams('query=Rick&page=1');
+
+    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
+    (useSearchParams as jest.Mock).mockImplementation(() => mockSearchParams);
 
     render(
-      <RouterContext.Provider value={mockedRouter}>
-        <Pagination
-          currentPage={1}
-          totalPages={3}
-          onPageChange={(page) =>
-            mockedRouter.push({
-              pathname: mockedRouter.pathname,
-              query: { ...mockedRouter.query, page: String(page) },
-            })
-          }
-        />
-      </RouterContext.Provider>
+      <Pagination
+        currentPage={1}
+        totalPages={3}
+        onPageChange={(page) => {
+          const params = new URLSearchParams(mockSearchParams.toString());
+          params.set('page', String(page));
+          mockPush(`/?${params.toString()}`);
+        }}
+      />
     );
 
     const nextButton = screen.getByText('Next ►');
     fireEvent.click(nextButton);
 
-    expect(mockedRouter.push).toHaveBeenCalledTimes(1);
-    expect(mockedRouter.push).toHaveBeenCalledWith({
-      pathname: mockedRouter.pathname,
-      query: { query: 'Rick', page: '2' },
-    });
+    expect(mockPush).toHaveBeenCalledWith('/?query=Rick&page=2');
   });
 });

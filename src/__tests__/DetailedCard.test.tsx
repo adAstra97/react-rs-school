@@ -1,14 +1,18 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { Provider } from 'react-redux';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { DetailedCard } from '../components';
 import { mockCharacters } from '../shared/mocks/characters';
 import { makeStore } from '../redux';
-import { createMockRouter } from '../utils/test-helper';
 import { Character } from '../shared/types/character.interface';
 
 const mockCard = mockCharacters[0] as Character;
+
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(),
+  useSearchParams: vi.fn(),
+}));
 
 vi.mock('next/image', () => ({
   default: ({ src, alt }: { src: string; alt: string }) => (
@@ -27,24 +31,34 @@ vi.mock('next/link', () => ({
 }));
 
 describe('DetailedCard Component', () => {
-  let mockedRouter: ReturnType<typeof createMockRouter>;
   let store: ReturnType<typeof makeStore>;
+  const mockPush = vi.fn();
 
   beforeEach(() => {
-    mockedRouter = createMockRouter({
-      query: { page: '1', query: 'Rick', detailsId: '1' },
-    });
     store = makeStore();
+
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+    });
+
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: (key: string) => {
+        const params = new URLSearchParams('page=1&query=Rick&detailsId=1');
+        return params.get(key);
+      },
+    });
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should render detailed card data correctly', () => {
-    const Wrapper = ({ children }: { children: React.ReactNode }) => (
-      <RouterContext.Provider value={mockedRouter}>
-        <Provider store={store}>{children}</Provider>
-      </RouterContext.Provider>
+    render(
+      <Provider store={store}>
+        <DetailedCard character={mockCard} />
+      </Provider>
     );
-
-    render(<DetailedCard character={mockCard} />, { wrapper: Wrapper });
 
     expect(screen.getByText(mockCard.name)).toBeInTheDocument();
     expect(screen.getByText(mockCard.species)).toBeInTheDocument();
@@ -69,23 +83,25 @@ describe('DetailedCard Component', () => {
   });
 
   it('should close the component when clicking the close button', () => {
-    const Wrapper = ({ children }: { children: React.ReactNode }) => (
-      <RouterContext.Provider value={mockedRouter}>
-        <Provider store={store}>{children}</Provider>
-      </RouterContext.Provider>
+    const mockGet = vi.fn((key: string) =>
+      new URLSearchParams('page=1&query=Rick&detailsId=1').get(key)
     );
 
-    render(<DetailedCard character={mockCard} />, { wrapper: Wrapper });
+    const mockToString = vi.fn(() => 'page=1&query=Rick&detailsId=1');
+
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: mockGet,
+      toString: mockToString,
+    });
+
+    render(
+      <Provider store={store}>
+        <DetailedCard character={mockCard} />
+      </Provider>
+    );
 
     fireEvent.click(screen.getByTestId('close-button'));
 
-    expect(mockedRouter.push).toHaveBeenCalledWith(
-      {
-        pathname: mockedRouter.pathname,
-        query: { page: '1', query: 'Rick' },
-      },
-      undefined,
-      { shallow: true }
-    );
+    expect(mockPush).toHaveBeenCalledWith('/?page=1&query=Rick');
   });
 });
