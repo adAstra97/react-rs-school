@@ -117,3 +117,17 @@ input:checked + .slider:before {
     inset -3px -2px 5px -2px #f7e283,
     inset -10px -4px 0 0 #fbeca3;
 }
+
+.details-panel-fade {
+  animation: fadeIn 700ms ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

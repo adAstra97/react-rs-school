@@ -49,13 +49,9 @@ describe('OverlayWithClose', () => {
     const overlay = screen.getByRole('presentation');
     fireEvent.click(overlay);
 
-    expect(mockedRouter.push).toHaveBeenCalledWith(
-      {
-        pathname: mockedRouter.pathname,
-        query: { page: '1', query: 'Rick' },
-      },
-      undefined,
-      { shallow: true }
-    );
+    expect(mockedRouter.push).toHaveBeenCalledWith({
+      pathname: mockedRouter.pathname,
+      query: { page: '1', query: 'Rick' },
+    });
   });
 });

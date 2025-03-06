@@ -79,13 +79,9 @@ describe('DetailedCard Component', () => {
 
     fireEvent.click(screen.getByTestId('close-button'));
 
-    expect(mockedRouter.push).toHaveBeenCalledWith(
-      {
-        pathname: mockedRouter.pathname,
-        query: { page: '1', query: 'Rick' },
-      },
-      undefined,
-      { shallow: true }
-    );
+    expect(mockedRouter.push).toHaveBeenCalledWith({
+      pathname: mockedRouter.pathname,
+      query: { page: '1', query: 'Rick' },
+    });
   });
 });

@@ -36,7 +36,7 @@ describe('DetailsPanel', () => {
 
     const { rerender } = render(
       <RouterContext.Provider value={mockRouter}>
-        <DetailsPanel />
+        <DetailsPanel detailsId="1" />
       </RouterContext.Provider>
     );
 
@@ -49,7 +49,7 @@ describe('DetailsPanel', () => {
 
     rerender(
       <RouterContext.Provider value={mockRouter}>
-        <DetailsPanel />
+        <DetailsPanel detailsId="1" />
       </RouterContext.Provider>
     );
 
@@ -66,11 +66,18 @@ describe('DetailsPanel', () => {
 
     render(
       <RouterContext.Provider value={mockRouter}>
-        <DetailsPanel />
+        <DetailsPanel detailsId={String(mockCard.id)} />
       </RouterContext.Provider>
     );
 
-    expect(screen.getByText(mockCard.name)).toBeInTheDocument();
+    await waitFor(
+      () => {
+        expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+      },
+      { timeout: 1000 }
+    );
+
+    expect(await screen.findByText(mockCard.name)).toBeInTheDocument();
     expect(screen.getByAltText(mockCard.name)).toBeInTheDocument();
   });
 });

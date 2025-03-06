@@ -34,13 +34,9 @@ export const SearchCard = ({ card }: SearchCardProps) => {
   };
 
   const handleCardClick = () => {
-    router.push(
-      {
-        query: { ...router.query, detailsId: id },
-      },
-      undefined,
-      { shallow: true }
-    );
+    router.push({
+      query: { ...router.query, detailsId: id },
+    });
   };
 
   return (

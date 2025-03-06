@@ -8,13 +8,7 @@ export const useCloseDetails = () => {
       const updatedQuery = { ...router.query };
       delete updatedQuery.detailsId;
 
-      router.push(
-        { pathname: router.pathname, query: updatedQuery },
-        undefined,
-        {
-          shallow: true,
-        }
-      );
+      router.push({ pathname: router.pathname, query: updatedQuery });
     }
   };
 

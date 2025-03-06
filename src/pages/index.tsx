@@ -25,11 +25,11 @@ import { useRouteLoader } from '../hooks/use-route-loader';
 interface QueryParams {
   searchQuery: string;
   currentPage: number;
+  detailsId: string;
 }
 
-const MainPage = ({ searchQuery, currentPage }: QueryParams) => {
+const MainPage = ({ searchQuery, currentPage, detailsId }: QueryParams) => {
   const router = useRouter();
-  const { detailsId } = router.query;
   const isRouteChanging = useRouteLoader();
 
   const { value: savedQuery, setValue: setSavedQuery } =
@@ -67,9 +67,7 @@ const MainPage = ({ searchQuery, currentPage }: QueryParams) => {
         className={`${detailsId ? 'border-r-2 border-r-stone-500 relative' : ''} mx-auto flex-[1_1_0%] px-5`}
       >
         <OverlayWithClose isOpen={!!detailsId} />
-        <header className="py-5">
-          <Search searchQuery={savedQuery} onSearch={handleSearch} />
-        </header>
+        <Search searchQuery={savedQuery} onSearch={handleSearch} />
         <main className="max-w-[900px] mx-auto">
           {isFetching || (isRouteChanging && !detailsId) ? (
             <Spinner />
@@ -93,7 +91,7 @@ const MainPage = ({ searchQuery, currentPage }: QueryParams) => {
 
       {detailsId && (
         <div className="w-[500px] flex p-8 relative">
-          <DetailsPanel />
+          <DetailsPanel detailsId={detailsId} />
         </div>
       )}
     </div>
@@ -122,6 +120,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       props: {
         searchQuery,
         currentPage,
+        detailsId: typeof detailsId === 'string' ? detailsId : '',
       },
     };
   }

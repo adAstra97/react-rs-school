@@ -10,7 +10,7 @@ export const DetailedCard = ({ character }: DetailedCardProps) => {
   const handleClose = useCloseDetails();
 
   return (
-    <>
+    <div className="details-panel-fade">
       <button onClick={handleClose} className="link" data-testid="close-button">
         <Image
           src="/assets/icons/close.svg"
@@ -48,6 +48,6 @@ export const DetailedCard = ({ character }: DetailedCardProps) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };

@@ -54,13 +54,9 @@ describe('SearchCard', () => {
     fireEvent.click(screen.getByRole('button'));
 
     await waitFor(() => {
-      expect(mockedRouter.push).toHaveBeenCalledWith(
-        {
-          query: { page: '1', query: 'Rick', detailsId: mockCard.id },
-        },
-        undefined,
-        { shallow: true }
-      );
+      expect(mockedRouter.push).toHaveBeenCalledWith({
+        query: { page: '1', query: 'Rick', detailsId: mockCard.id },
+      });
     });
   });
 
