@@ -6,7 +6,6 @@ import {
   useNavigation,
   useSearchParams,
 } from 'react-router';
-import type { Route } from './+types/MainPage';
 import { useLocalStorage } from '../hooks/use-local-storage';
 import {
   CardList,
@@ -20,8 +19,18 @@ import {
 import { handleError } from '../utils/handle-error';
 import { Flyout } from '../components/Flyout/Flyout';
 import { useOpenDetailsPanel } from '../hooks/use-open-details-panel';
+import { CharacterResponse } from '../shared/types/character.interface';
 
-export default function MainPage({ loaderData }: Route.ComponentProps) {
+interface Props {
+  loaderData: {
+    charactersData?: CharacterResponse;
+    error?: unknown;
+    searchQuery: string;
+    currentPage: number;
+  };
+}
+
+export default function MainPage({ loaderData }: Props) {
   const { charactersData, error, searchQuery, currentPage } = loaderData;
   const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -31,7 +40,7 @@ export default function MainPage({ loaderData }: Route.ComponentProps) {
   const { value: savedQuery, setValue: setSavedQuery } =
     useLocalStorage('search-query');
 
-  const showingDetails = navigation.location?.pathname.includes('details');
+  const showingDetails = navigation?.location?.pathname.includes('details');
 
   const items = charactersData?.results || [];
   const totalPages = charactersData?.info?.pages || 1;
@@ -67,7 +76,7 @@ export default function MainPage({ loaderData }: Route.ComponentProps) {
           }}
         />
         <main className="max-w-[900px] mx-auto">
-          {navigation.state === 'loading' && !showingDetails ? (
+          {navigation?.state === 'loading' && !showingDetails ? (
             <Spinner />
           ) : error ? (
             <ErrorBlock errorText={handleError(error)} />

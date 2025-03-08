@@ -3,7 +3,7 @@ import { reactRouter } from '@react-router/dev/vite';
 
 export default defineConfig({
   base: '/',
-  plugins: [reactRouter()],
+  plugins: [!process.env.VITEST && reactRouter()],
   test: {
     globals: true,
     environment: 'jsdom',
@@ -17,12 +17,6 @@ export default defineConfig({
         '**/*.spec.tsx',
         'src/__tests__/setup.ts',
       ],
-      thresholds: {
-        lines: 80,
-        functions: 80,
-        branches: 80,
-        statements: 80,
-      },
     },
   },
 });

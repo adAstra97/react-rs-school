@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocalStorage } from '../../hooks/use-local-storage';
 
 interface SearchProps {
   searchQuery: string;
@@ -7,6 +8,7 @@ interface SearchProps {
 
 export const Search = ({ searchQuery, onSearch }: SearchProps) => {
   const [localQuery, setLocalQuery] = useState(searchQuery);
+  const { setValue: setSavedQuery } = useLocalStorage('search-query');
 
   useEffect(() => {
     setLocalQuery(searchQuery);
@@ -15,6 +17,7 @@ export const Search = ({ searchQuery, onSearch }: SearchProps) => {
   const handleSearch = () => {
     const trimmedQuery = localQuery.trim();
     onSearch(trimmedQuery);
+    setSavedQuery(trimmedQuery);
   };
 
   return (

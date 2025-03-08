@@ -16,10 +16,11 @@ import { Route } from './+types/root';
 import './index.css';
 
 export async function loader({ request }: Route.LoaderArgs) {
+  const url = new URL(request.url);
+  const searchQuery = url.searchParams.get('query') || '';
+  const currentPage = Number(url.searchParams.get('page')) || 1;
+
   try {
-    const url = new URL(request.url);
-    const searchQuery = url.searchParams.get('query') || '';
-    const currentPage = Number(url.searchParams.get('page')) || 1;
     const charactersData = await store
       .dispatch(
         getCharacters.initiate({ name: searchQuery, page: currentPage })
@@ -28,7 +29,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
     return { charactersData, searchQuery, currentPage };
   } catch (error) {
-    return { error };
+    return { error, searchQuery, currentPage };
   }
 }
 
