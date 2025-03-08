@@ -27,3 +27,4 @@ export const charactersApi = createApi({
 });
 
 export const { useGetCharactersQuery, useGetCharacterQuery } = charactersApi;
+export const { getCharacters, getCharacter } = charactersApi.endpoints;
