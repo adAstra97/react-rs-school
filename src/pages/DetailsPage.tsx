@@ -1,8 +1,8 @@
 import { getCharacter, store } from '../redux';
 import { handleError } from '../utils/handle-error';
 import { DetailedCard, ErrorBlock, Spinner } from '../components';
-import type { Route } from './+types/DetailsPage';
 import { useDetailsLoading } from '../hooks/use-details-loading';
+import { Route } from './+types/DetailsPage';
 
 export async function loader({ params }: Route.LoaderArgs) {
   try {
@@ -19,7 +19,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function DetailsPage({ loaderData }: Route.ComponentProps) {
   const { characterData, detailsId, error } = loaderData;
-  const isDetailsLoading = useDetailsLoading(detailsId);
+  const isDetailsLoading = useDetailsLoading(detailsId ?? null);
 
   return (
     <div className="flex-1 flex justify-center flex-col gap-2 items-center details-panel-fade">
@@ -27,9 +27,9 @@ export default function DetailsPage({ loaderData }: Route.ComponentProps) {
         <Spinner />
       ) : error ? (
         <ErrorBlock errorText={handleError(error)} />
-      ) : (
+      ) : characterData ? (
         <DetailedCard character={characterData} />
-      )}
+      ) : null}
     </div>
   );
 }

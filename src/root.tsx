@@ -9,11 +9,11 @@ import {
   useRouteError,
 } from 'react-router';
 import { ThemeProvider } from './providers/ThemeProvider';
-import type { Route } from './+types/root';
-import MainPage from './routes/MainPage';
+import MainPage from './pages/MainPage';
 import { ThemeSwitcher } from './components';
+import NotFoundPage from './pages/NotFoundPage';
+import { Route } from './+types/root';
 import './index.css';
-import NotFoundPage from './routes/NotFoundPage';
 
 export async function loader({ request }: Route.LoaderArgs) {
   try {
