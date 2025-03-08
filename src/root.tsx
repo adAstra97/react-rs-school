@@ -1,11 +1,19 @@
 import { Provider } from 'react-redux';
 import { getCharacters, store } from './redux';
-import { Links, Meta, Scripts, ScrollRestoration } from 'react-router';
+import {
+  isRouteErrorResponse,
+  Links,
+  Meta,
+  Scripts,
+  ScrollRestoration,
+  useRouteError,
+} from 'react-router';
 import { ThemeProvider } from './providers/ThemeProvider';
-import { ErrorBoundary } from './components';
 import type { Route } from './+types/root';
 import MainPage from './routes/MainPage';
+import { ThemeSwitcher } from './components';
 import './index.css';
+import NotFoundPage from './routes/NotFoundPage';
 
 export async function loader({ request }: Route.LoaderArgs) {
   try {
@@ -25,15 +33,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function Root({ loaderData }: Route.ComponentProps) {
-  return (
-    <Provider store={store}>
-      <ThemeProvider>
-        <ErrorBoundary>
-          <MainPage loaderData={loaderData} />
-        </ErrorBoundary>
-      </ThemeProvider>
-    </Provider>
-  );
+  return <MainPage loaderData={loaderData} />;
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -48,10 +48,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <ThemeProvider>
+          <Provider store={store}>{children}</Provider>
+        </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <>
+        <ThemeSwitcher />
+        <NotFoundPage />
+      </>
+    );
+  }
 }
