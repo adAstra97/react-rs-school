@@ -18,7 +18,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       )
       .unwrap();
 
-    return { charactersData };
+    return { charactersData, searchQuery, currentPage };
   } catch (error) {
     return { error };
   }
