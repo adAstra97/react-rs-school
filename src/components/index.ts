@@ -1,9 +1,9 @@
-export { Search } from './search/Search.tsx';
+export { Search } from './search/search.tsx';
 export { CardList } from './CardList/CardList.tsx';
 export { SearchCard } from './Card/SearchCard/SearchCard.tsx';
 export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary.tsx';
 export { ErrorBlock } from './ErrorBlock/ErrorBlock.tsx';
-export { Spinner } from './spinner/Spinner.tsx';
+export { Spinner } from './spinner/spinner.tsx';
 export { Pagination } from './Pagination/Pagination.tsx';
 export { OverlayWithClose } from './OverlayWithClose/OverlayWithClose.tsx';
 export { DetailedCard } from './Card/DetailedCard/DetailedCard.tsx';
