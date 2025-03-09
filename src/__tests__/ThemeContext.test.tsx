@@ -15,17 +15,17 @@ describe('ThemeProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (useLocalStorage as jest.Mock).mockReturnValue({
-      value: 'dark',
+      value: 'light',
       setValue: mockSetValue,
     });
   });
 
-  it('should initialize with dark theme', () => {
+  it('should initialize with light theme', () => {
     const { result } = renderHook(() => useTheme(), {
       wrapper: ThemeProvider,
     });
 
-    expect(result.current).toBe('dark');
+    expect(result.current).toBe('light');
   });
 
   it('should toggle theme', () => {
@@ -61,7 +61,7 @@ describe('ThemeProvider', () => {
       wrapper: ThemeProvider,
     }).result.current();
 
-    expect(useLocalStorage).toHaveBeenCalledWith('theme', 'dark');
+    expect(useLocalStorage).toHaveBeenCalledWith('theme', 'light');
     expect(mockSetValue).toHaveBeenCalled();
   });
 

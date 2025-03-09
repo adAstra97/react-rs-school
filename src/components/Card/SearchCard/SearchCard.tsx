@@ -1,6 +1,7 @@
-import { Link, useLocation } from 'react-router';
+import Image from 'next/image';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { ChangeEvent } from 'react';
+import { useRouter } from 'next/router';
 import {
   addSelectedCharacter,
   removeSelectedCharacter,
@@ -12,14 +13,15 @@ interface SearchCardProps {
 }
 
 export const SearchCard = ({ card }: SearchCardProps) => {
+  const router = useRouter();
+
   const { id, name, image, species } = card;
-  const location = useLocation();
 
   const dispatch = useAppDispatch();
   const selectedCharacters = useAppSelector(
     (state) => state.selectedCharacters
   );
-  const isSelectedCharacter = selectedCharacters.some(
+  const isSelectedCharacter = selectedCharacters?.some(
     (character) => character.id === id
   );
 
@@ -31,23 +33,29 @@ export const SearchCard = ({ card }: SearchCardProps) => {
     }
   };
 
+  const handleCardClick = () => {
+    router.push({
+      query: { ...router.query, detailsId: id },
+    });
+  };
+
   return (
-    <div className="relative">
+    <div className="relative" data-testid="search-card">
       <input
         type="checkbox"
         checked={isSelectedCharacter}
         onChange={handleSelectCharacter}
         className="absolute top-2 left-2 w-8 h-8 z-10 accent-button rounded-md cursor-pointer"
       />
-      <Link
-        to={`/details/${id}${location.search}`}
-        className="h-auto max-h-[200px] rounded-2xl shadow-2xl"
-      >
+      <button onClick={handleCardClick} className="link">
         <div className="relative rounded-2xl overflow-hidden">
-          <img
-            className="w-[200px] h-[200px] object-cover object-center transition-opacity group-hover:opacity-100"
+          <Image
+            width={200}
+            height={200}
+            className="object-cover object-center transition-opacity group-hover:opacity-100"
             src={image}
             alt={name}
+            priority={true}
           />
           <div className="absolute inset-0 bg-cardOverlay transition-colors group-hover:bg-black/30" />
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 text-white">
@@ -55,7 +63,7 @@ export const SearchCard = ({ card }: SearchCardProps) => {
             <span className="text-lg opacity-90 drop-shadow-md">{species}</span>
           </div>
         </div>
-      </Link>
+      </button>
     </div>
   );
 };

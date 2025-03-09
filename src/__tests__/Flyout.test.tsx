@@ -1,17 +1,19 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { vi } from 'vitest';
 import { Flyout } from '../components/Flyout/Flyout';
 import { clearSelectedCharacters } from '../redux/slices/selectedCharactersSlice';
 import { generateCsvContent } from '../utils/csv-export';
-import { RootState, store } from '../redux/store';
+import { createMockRouter } from '../utils/test-helper';
 import { mockCharacters } from '../shared/mocks/characters';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { Character } from '../shared/types/character.interface';
+import { RootState } from '../redux';
 
-const mockCard = mockCharacters[0];
+const mockCard = mockCharacters[0] as Character;
 
 vi.mock('../redux/hooks.ts', () => ({
-  useAppSelector: vi.fn((selector: (state: RootState) => unknown) =>
+  useAppSelector: vi.fn((selector) =>
     selector({
       selectedCharacters: [mockCard],
       charactersApi: {},
@@ -26,9 +28,14 @@ vi.mock('../utils/csv-export', () => ({
 }));
 
 describe('Flyout component', () => {
+  let mockRouter: ReturnType<typeof createMockRouter>;
   const mockDispatch = vi.fn();
 
   beforeEach(() => {
+    mockRouter = createMockRouter({
+      query: { detailsId: String(mockCard.id) },
+    });
+
     vi.mocked(useAppDispatch).mockReturnValue(mockDispatch);
     vi.mocked(useAppSelector).mockImplementation((selector) =>
       selector({
@@ -44,9 +51,9 @@ describe('Flyout component', () => {
 
   it('should render correctly with selected characters', () => {
     render(
-      <Provider store={store}>
+      <RouterContext.Provider value={mockRouter}>
         <Flyout />
-      </Provider>
+      </RouterContext.Provider>
     );
 
     expect(screen.getByText('item are selected')).toBeInTheDocument();
@@ -54,22 +61,22 @@ describe('Flyout component', () => {
     expect(screen.getByText('Download')).toBeInTheDocument();
   });
 
-  it('should dispatch clear action when unselect all clicked', () => {
+  it('should dispatch clear action when "Unselect all" is clicked', () => {
     render(
-      <Provider store={store}>
+      <RouterContext.Provider value={mockRouter}>
         <Flyout />
-      </Provider>
+      </RouterContext.Provider>
     );
 
     fireEvent.click(screen.getByText('Unselect all'));
     expect(mockDispatch).toHaveBeenCalledWith(clearSelectedCharacters());
   });
 
-  it('should call CSV download functions when download clicked', () => {
+  it('should call CSV download functions when "Download" is clicked', () => {
     render(
-      <Provider store={store}>
+      <RouterContext.Provider value={mockRouter}>
         <Flyout />
-      </Provider>
+      </RouterContext.Provider>
     );
 
     fireEvent.click(screen.getByText('Download'));

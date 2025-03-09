@@ -1,17 +1,25 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Routes, Route } from 'react-router';
-import { NotFoundPage } from '../pages';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import { createMockRouter } from '../utils/test-helper';
+import Custom500 from '../pages/500';
+import NotFoundPage from '../pages/404';
 
-describe('NotFoundPage', () => {
+describe('Error pages', () => {
   it('should show 404 page for unknown route', () => {
+    const mockedRouter = createMockRouter({ pathname: '/det' });
+
     render(
-      <MemoryRouter initialEntries={['/det']}>
-        <Routes>
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </MemoryRouter>
+      <RouterContext.Provider value={mockedRouter}>
+        <NotFoundPage />
+      </RouterContext.Provider>
     );
 
     expect(screen.getByText('404')).toBeInTheDocument();
+  });
+
+  it('should display a 500 error message', () => {
+    render(<Custom500 />);
+
+    expect(screen.getByText('500')).toBeInTheDocument();
   });
 });

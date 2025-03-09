@@ -1,4 +1,4 @@
-import SpinnerIcon from '../../assets/icons/spinner.svg';
+import Image from 'next/image';
 
 export const Spinner = () => {
   return (
@@ -6,7 +6,12 @@ export const Spinner = () => {
       data-testid="spinner"
       className="absolute flex justify-center items-center inset-0 bg-[rgba(0,0,0,0.1)]"
     >
-      <img src={SpinnerIcon} alt="loading" />
+      <Image
+        width={100}
+        height={100}
+        src="/assets/icons/spinner.svg"
+        alt="loading"
+      />
     </div>
   );
 };

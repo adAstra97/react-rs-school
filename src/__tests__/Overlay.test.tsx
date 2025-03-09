@@ -1,32 +1,57 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { OverlayWithClose } from '../components';
+import { createMockRouter } from '../utils/test-helper';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import { Provider } from 'react-redux';
+import { makeStore } from '../redux';
 
 describe('OverlayWithClose', () => {
+  let mockedRouter: ReturnType<typeof createMockRouter>;
+  let store: ReturnType<typeof makeStore>;
+
+  beforeEach(() => {
+    mockedRouter = createMockRouter({
+      query: { page: '1', query: 'Rick' },
+    });
+    store = makeStore();
+  });
+
   it('should not render when isOpen is false', () => {
-    const { container } = render(
-      <OverlayWithClose isOpen={false} onClose={vi.fn()} />
+    const Wrapper = ({ children }: { children: React.ReactNode }) => (
+      <RouterContext.Provider value={mockedRouter}>
+        <Provider store={store}>{children}</Provider>
+      </RouterContext.Provider>
     );
+
+    const { container } = render(<OverlayWithClose isOpen={false} />, {
+      wrapper: Wrapper,
+    });
 
     expect(container.firstChild).toBeNull();
   });
 
   it('should call onClose when clicked and render correctly', () => {
-    const mockOnClose = vi.fn();
-    render(<OverlayWithClose isOpen={true} onClose={mockOnClose} />);
+    const mockedRouter = createMockRouter({
+      query: { page: '1', query: 'Rick', detailsId: '1' },
+    });
 
-    const overlay = screen.getByRole('presentation');
+    const store = makeStore();
 
-    expect(overlay).toBeInTheDocument();
-    expect(overlay).toHaveClass(
-      'absolute',
-      'inset-0',
-      'bg-black/50',
-      'z-20',
-      'cursor-pointer'
+    const Wrapper = ({ children }: { children: React.ReactNode }) => (
+      <RouterContext.Provider value={mockedRouter}>
+        <Provider store={store}>{children}</Provider>
+      </RouterContext.Provider>
     );
 
+    render(<OverlayWithClose isOpen={true} />, { wrapper: Wrapper });
+
+    const overlay = screen.getByRole('presentation');
     fireEvent.click(overlay);
-    expect(mockOnClose).toHaveBeenCalledTimes(1);
+
+    expect(mockedRouter.push).toHaveBeenCalledWith({
+      pathname: mockedRouter.pathname,
+      query: { page: '1', query: 'Rick' },
+    });
   });
 });

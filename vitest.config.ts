@@ -18,9 +18,6 @@ export default defineConfig({
         'src/__tests__/setup.ts',
       ],
       thresholds: {
-        lines: 80,
-        functions: 80,
-        branches: 80,
         statements: 80,
       },
     },

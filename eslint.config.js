@@ -1,45 +1,75 @@
-import js from '@eslint/js';
 import globals from 'globals';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
-import react from 'eslint-plugin-react';
+import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import nextPlugin from '@next/eslint-plugin-next';
+import pluginReact from 'eslint-plugin-react';
+import pluginReactHooks from 'eslint-plugin-react-hooks';
+import pluginReactRefresh from 'eslint-plugin-react-refresh';
+import pluginReactCompiler from 'eslint-plugin-react-compiler';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
-import reactCompiler from 'eslint-plugin-react-compiler';
+import { FlatCompat } from '@eslint/eslintrc';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const compat = new FlatCompat({ baseDirectory: __dirname });
+
+/** @type {import('eslint').Linter.Config[]} */
+const config = [
+  { ignores: ['.next/**', 'dist/**', 'next.config.js', 'postcss.config.js'] },
+  { files: ['**/*.{ts,tsx}'] },
   {
-    extends: [
-      js.configs.recommended,
-      ...tseslint.configs.strict,
-      eslintPluginPrettier,
-    ],
-    files: ['**/*.{ts,tsx}'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: { ...globals.browser, ...globals.node },
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      parserOptions: {
+        project: './tsconfig.json',
+      },
     },
-    plugins: {
-      react,
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-      'react-compiler': reactCompiler,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
-      'react-compiler/react-compiler': 'error',
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
-    },
+  },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.strict,
+  pluginReact.configs.flat.recommended,
+  eslintPluginPrettier,
+  ...compat.config({
+    extends: ['next', 'next/core-web-vitals'],
     settings: {
       react: {
         version: 'detect',
       },
+      next: {
+        rootDir: __dirname,
+      },
     },
-  }
-);
+  }),
+  {
+    plugins: {
+      '@next/next': nextPlugin,
+      'react-hooks': pluginReactHooks,
+      react: pluginReact,
+      'react-refresh': pluginReactRefresh,
+      'react-compiler': pluginReactCompiler,
+    },
+    rules: {
+      'prettier/prettier': ['error', { endOfLine: 'auto' }],
+      'react/react-in-jsx-scope': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      '@next/next/no-html-link-for-pages': 'error',
+      '@next/next/no-img-element': 'off',
+      'react/jsx-key': 'error',
+      '@typescript-eslint/no-explicit-any': 'error',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'error',
+      'react-compiler/react-compiler': 'error',
+    },
+  },
+];
+export default config;

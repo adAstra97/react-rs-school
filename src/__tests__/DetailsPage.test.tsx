@@ -1,13 +1,15 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { vi } from 'vitest';
-import { DetailsPage } from '../pages';
-import { useGetCharacterQuery } from '../redux/charactersApi';
+import { useGetCharacterQuery } from '../redux';
 import { mockCharacters } from '../shared/mocks/characters';
+import { createMockRouter } from '../utils/test-helper';
+import { Character } from '../shared/types/character.interface';
+import DetailsPanel from '../components/DetailsPanel/DetailsPanel';
 
-const mockCard = mockCharacters[0];
+const mockCard = mockCharacters[0] as Character;
 
-vi.mock('../redux/charactersApi.ts', async (importOriginal) => {
+vi.mock('../redux/charactersApi', async (importOriginal) => {
   const mod = await importOriginal<typeof import('../redux/charactersApi')>();
   return {
     ...mod,
@@ -15,7 +17,15 @@ vi.mock('../redux/charactersApi.ts', async (importOriginal) => {
   };
 });
 
-describe('DetailsPage', () => {
+describe('DetailsPanel', () => {
+  let mockRouter: ReturnType<typeof createMockRouter>;
+
+  beforeEach(() => {
+    mockRouter = createMockRouter({
+      query: { detailsId: String(mockCard.id) },
+    });
+  });
+
   it('should show a loading indicator while fetching data', async () => {
     const mock = useGetCharacterQuery as jest.Mock;
 
@@ -25,11 +35,9 @@ describe('DetailsPage', () => {
     });
 
     const { rerender } = render(
-      <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route path="/details/:id" element={<DetailsPage />} />
-        </Routes>
-      </MemoryRouter>
+      <RouterContext.Provider value={mockRouter}>
+        <DetailsPanel detailsId="1" />
+      </RouterContext.Provider>
     );
 
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
@@ -40,15 +48,13 @@ describe('DetailsPage', () => {
     });
 
     rerender(
-      <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route path="/details/:id" element={<DetailsPage />} />
-        </Routes>
-      </MemoryRouter>
+      <RouterContext.Provider value={mockRouter}>
+        <DetailsPanel detailsId="1" />
+      </RouterContext.Provider>
     );
 
     await waitFor(() => {
-      expect(screen.queryByTestId('spinner')).toBeNull();
+      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
     });
   });
 
@@ -59,14 +65,19 @@ describe('DetailsPage', () => {
     });
 
     render(
-      <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route path="/details/:id" element={<DetailsPage />} />
-        </Routes>
-      </MemoryRouter>
+      <RouterContext.Provider value={mockRouter}>
+        <DetailsPanel detailsId={String(mockCard.id)} />
+      </RouterContext.Provider>
     );
 
-    expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
-    expect(screen.getByAltText('Rick Sanchez')).toBeInTheDocument();
+    await waitFor(
+      () => {
+        expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+      },
+      { timeout: 1000 }
+    );
+
+    expect(await screen.findByText(mockCard.name)).toBeInTheDocument();
+    expect(screen.getByAltText(mockCard.name)).toBeInTheDocument();
   });
 });
