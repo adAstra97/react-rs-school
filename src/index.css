@@ -54,3 +54,17 @@ button {
     @apply opacity-50 cursor-default hover:text-button hover:bg-transparent;
   }
 }
+
+.details-panel-fade {
+  animation: fadeIn 700ms ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
