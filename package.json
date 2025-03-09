@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "react-router dev",
-    "build": "tsc -b && vite build",
+    "build": "react-router build",
     "lint": "eslint . --max-warnings 0",
     "preview": "vite preview",
     "format:fix": "prettier -l --write .",
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@netlify/vite-plugin-react-router": "^1.0.0",
     "@react-router/dev": "^7.3.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",

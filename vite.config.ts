@@ -1,9 +1,10 @@
 import { defineConfig } from 'vitest/config';
 import { reactRouter } from '@react-router/dev/vite';
+import netlifyPlugin from '@netlify/vite-plugin-react-router';
 
 export default defineConfig({
   base: '/',
-  plugins: [!process.env.VITEST && reactRouter()],
+  plugins: [!process.env.VITEST && reactRouter(), netlifyPlugin()],
   test: {
     globals: true,
     environment: 'jsdom',
