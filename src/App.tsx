@@ -1,8 +1,11 @@
+import { BrowserRouter } from 'react-router';
+import AppRoutes from './routes';
+
 function App() {
   return (
-    <>
-      <div className="">werwer</div>
-    </>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
 

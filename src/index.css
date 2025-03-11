@@ -21,5 +21,5 @@
 }
 
 body {
-  @apply m-0 flex min-w-[320px] min-h-screen;
+  @apply m-0 min-w-[320px] min-h-screen bg-dark-blue;
 }
