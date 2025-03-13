@@ -2,21 +2,19 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { InputField } from '../InputField/InputField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormSchema, TFormSchema } from '../../../utils/FormSchema.zod';
+import { COUNTRIES } from '../../../shared/data';
 
 export const ControlledForm = () => {
   const {
     register,
     handleSubmit,
-    trigger,
     formState: { errors, isSubmitting, isValid },
   } = useForm<TFormSchema>({
     resolver: zodResolver(FormSchema),
     mode: 'all',
     defaultValues: {
-      age: undefined,
       gender: 'male',
     },
-    // shouldUseNativeValidation: false,
   });
 
   const onSubmit: SubmitHandler<TFormSchema> = (data) => {
@@ -36,11 +34,7 @@ export const ControlledForm = () => {
         id="age"
         type="text"
         label="Age:"
-        {...register('age', {
-          onBlur: () => {
-            trigger('age');
-          },
-        })}
+        {...register('age')}
         errorMessage={errors.age?.message}
       />
       <InputField
@@ -93,9 +87,9 @@ export const ControlledForm = () => {
           errorMessage={errors.country?.message}
         />
         <datalist id="country-list">
-          <option value="England" />
-          <option value="Poland" />
-          <option value="Belarus" />
+          {COUNTRIES.map((country) => (
+            <option key={country.id} value={country.name} />
+          ))}
         </datalist>
       </div>
       <InputField

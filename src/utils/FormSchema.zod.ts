@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { COUNTRIES } from '../shared/data';
 
 const FILE_TYPES = ['image/png', 'image/jpeg'];
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
@@ -54,11 +55,11 @@ export const FormSchema = z
 
     country: z
       .string()
-      .refine((val) => ['England', 'Poland', 'Belarus'].includes(val), {
+      .refine((value) => COUNTRIES.some((country) => country.name === value), {
         message: 'Select country from the list',
       }),
 
-    't&c': z.boolean().refine((val) => val, {
+    't&c': z.boolean().refine((value) => value, {
       message: 'You must accept the Terms and Conditions',
     }),
 
