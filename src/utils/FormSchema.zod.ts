@@ -59,7 +59,7 @@ export const FormSchema = z
         message: 'Select country from the list',
       }),
 
-    't&c': z.boolean().refine((value) => value, {
+    terms: z.boolean().refine((value) => value, {
       message: 'You must accept the Terms and Conditions',
     }),
 

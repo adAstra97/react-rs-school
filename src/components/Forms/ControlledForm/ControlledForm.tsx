@@ -108,11 +108,11 @@ export const ControlledForm = () => {
         </datalist>
       </div>
       <InputField
-        id="t&c"
+        id="terms"
         type="checkbox"
         label="I accept Terms and Conditions agreement"
-        {...register('t&c')}
-        errorMessage={errors['t&c']?.message}
+        {...register('terms')}
+        errorMessage={errors.terms?.message}
       />
       <InputField
         id="picture"
