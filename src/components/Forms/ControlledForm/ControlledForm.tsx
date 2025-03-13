@@ -2,7 +2,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { InputField } from '../InputField/InputField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormSchema, TFormSchema } from '../../../utils/FormSchema.zod';
-import { COUNTRIES } from '../../../shared/data';
+import { useAppSelector } from '../../../redux/hooks';
+import { readFileAsDataURL } from '../../../utils/read-file';
+import { useDispatch } from 'react-redux';
+import { saveForm } from '../../../redux/slices/forms-slice';
+import { useNavigate } from 'react-router';
 
 export const ControlledForm = () => {
   const {
@@ -17,8 +21,19 @@ export const ControlledForm = () => {
     },
   });
 
+  const countries = useAppSelector((store) => store.countries);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<TFormSchema> = (data) => {
-    console.log(data);
+    readFileAsDataURL(data.picture)
+      .then((base64) => {
+        dispatch(saveForm({ ...data, picture: base64 }));
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error('Upload failed:', error);
+      });
   };
 
   return (
@@ -87,7 +102,7 @@ export const ControlledForm = () => {
           errorMessage={errors.country?.message}
         />
         <datalist id="country-list">
-          {COUNTRIES.map((country) => (
+          {countries.map((country) => (
             <option key={country.id} value={country.name} />
           ))}
         </datalist>
