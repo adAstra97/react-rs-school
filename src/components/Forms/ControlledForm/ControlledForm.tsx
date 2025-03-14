@@ -7,11 +7,13 @@ import { readFileAsDataURL } from '../../../utils/read-file';
 import { useDispatch } from 'react-redux';
 import { saveForm } from '../../../redux/slices/forms-slice';
 import { useNavigate } from 'react-router';
+import { PasswordStrength } from '../../PasswordStrength/PasswordStrength';
 
 export const ControlledForm = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting, isValid },
   } = useForm<TFormSchema>({
     resolver: zodResolver(FormSchema),
@@ -24,6 +26,7 @@ export const ControlledForm = () => {
   const countries = useAppSelector((store) => store.countries);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const password = watch('password');
 
   const onSubmit: SubmitHandler<TFormSchema> = (data) => {
     readFileAsDataURL(data.picture)
@@ -59,13 +62,16 @@ export const ControlledForm = () => {
         {...register('email')}
         errorMessage={errors.email?.message}
       />
-      <InputField
-        id="password"
-        type="password"
-        label="Password:"
-        {...register('password')}
-        errorMessage={errors.password?.message}
-      />
+      <div>
+        <InputField
+          id="password"
+          type="password"
+          label="Password:"
+          {...register('password')}
+          errorMessage={errors.password?.message}
+        />
+        <PasswordStrength password={password} />
+      </div>
       <InputField
         id="confirm-password"
         type="password"

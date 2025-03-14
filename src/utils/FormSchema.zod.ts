@@ -1,15 +1,11 @@
 import { z } from 'zod';
 import { COUNTRIES } from '../shared/data';
-
-const FILE_TYPES = ['image/png', 'image/jpeg'];
-const MAX_FILE_SIZE = 2 * 1024 * 1024;
-const MAX_AGE = 100;
-const PASSWORD_REGEX = {
-  number: /\d/,
-  uppercase: /[A-Z]/,
-  lowercase: /[a-z]/,
-  special: /[!@#$%^&*]/,
-};
+import {
+  FILE_TYPES,
+  MAX_AGE,
+  MAX_FILE_SIZE,
+  PASSWORD_REGEX,
+} from '../shared/constants';
 
 export const FormSchema = z
   .object({
