@@ -62,7 +62,7 @@ export const FormSchema = z
     picture: z
       .custom<FileList>()
       .transform((files) => files?.[0])
-      .refine((file) => !!file, 'Photo is required')
+      .refine((file) => !!file, 'Picture is required')
       .refine(
         (file) => file?.size <= MAX_FILE_SIZE,
         'File size must be less than 2MB'

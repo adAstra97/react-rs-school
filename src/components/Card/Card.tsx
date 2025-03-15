@@ -2,12 +2,15 @@ import { StoredForm } from '../../redux/slices/forms-slice';
 
 interface Props {
   item: StoredForm;
+  classes?: string;
 }
 
-export const Card = ({ item }: Props) => {
+export const Card = ({ item, classes }: Props) => {
   const { name, age, password, country, email, gender, picture, terms } = item;
   return (
-    <li className="group rounded-2xl overflow-hidden border-2 border-grey">
+    <li
+      className={`${classes} group rounded-2xl overflow-hidden border-2 border-grey transition-all`}
+    >
       <div className="w-full aspect-square overflow-hidden">
         <img
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
