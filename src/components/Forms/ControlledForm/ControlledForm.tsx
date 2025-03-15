@@ -32,7 +32,9 @@ export const ControlledForm = () => {
     readFileAsDataURL(data.picture)
       .then((base64) => {
         dispatch(saveForm({ ...data, picture: base64 }));
-        navigate('/', { state: 'created' });
+        navigate('/', {
+          state: { formCreated: true },
+        });
       })
       .catch((error) => {
         console.error('Upload failed:', error);

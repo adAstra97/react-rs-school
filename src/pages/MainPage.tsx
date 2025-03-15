@@ -3,20 +3,24 @@ import { Card } from '../components/Card/Card';
 import { useAppSelector } from '../redux/hooks';
 import { useEffect, useState } from 'react';
 
+type LocationState = {
+  formCreated?: boolean;
+};
+
 const MainPage = () => {
   const allForms = useAppSelector((state) => state.forms);
   const [isHighlight, setIsHighlight] = useState(false);
   const location = useLocation();
-  const isFormCreated = location.state === 'created';
+  const state = location.state as LocationState;
 
   useEffect(() => {
-    if (isFormCreated) {
+    if (state?.formCreated) {
       setIsHighlight(true);
       const timer = setTimeout(() => setIsHighlight(false), 5000);
 
       return () => clearTimeout(timer);
     }
-  }, [isFormCreated]);
+  }, [state]);
 
   return (
     <main className="py-8">
