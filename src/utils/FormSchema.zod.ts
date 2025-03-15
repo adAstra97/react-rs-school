@@ -1,11 +1,6 @@
 import { z } from 'zod';
 import { COUNTRIES } from '../shared/data';
-import {
-  FILE_TYPES,
-  MAX_AGE,
-  MAX_FILE_SIZE,
-  PASSWORD_REGEX,
-} from '../shared/constants';
+import { FILE_TYPES, MAX_FILE_SIZE, PASSWORD_REGEX } from '../shared/constants';
 
 export const FormSchema = z
   .object({
@@ -21,8 +16,7 @@ export const FormSchema = z
       .refine(
         (val) => val >= 0 && /^\d+$/.test(String(val)),
         'Age must be a positive integer'
-      )
-      .refine((val) => val <= MAX_AGE, `Age must be less than ${MAX_AGE}`),
+      ),
 
     email: z.string().min(1, 'Email is required').email('Invalid email format'),
 
@@ -73,7 +67,7 @@ export const FormSchema = z
       ),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'The passwords must match.',
+    message: 'The passwords must match',
     path: ['confirmPassword'],
   });
 

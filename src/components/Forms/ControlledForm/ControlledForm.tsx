@@ -2,9 +2,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { InputField } from '../InputField/InputField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormSchema, TFormSchema } from '../../../utils/FormSchema.zod';
-import { useAppSelector } from '../../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { readFileAsDataURL } from '../../../utils/read-file';
-import { useDispatch } from 'react-redux';
 import { saveForm } from '../../../redux/slices/forms-slice';
 import { useNavigate } from 'react-router';
 import { PasswordStrength } from '../../PasswordStrength/PasswordStrength';
@@ -24,7 +23,7 @@ export const ControlledForm = () => {
   });
 
   const countries = useAppSelector((store) => store.countries);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const password = watch('password');
 

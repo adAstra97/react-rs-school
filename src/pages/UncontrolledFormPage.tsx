@@ -1,5 +1,7 @@
+import { UncontrolledForm } from '../components';
+
 const UncontrolledFormPage = () => {
-  return <div>UncontrolledFormPage</div>;
+  return <UncontrolledForm />;
 };
 
 export default UncontrolledFormPage;
