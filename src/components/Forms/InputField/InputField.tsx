@@ -4,15 +4,22 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
   errorMessage?: string;
+  classes?: string;
 }
 
-export const InputField = ({ id, label, errorMessage, ...rest }: Props) => {
+export const InputField = ({
+  id,
+  label,
+  errorMessage,
+  classes,
+  ...rest
+}: Props) => {
   const generatedId = useId();
   const inputId = id ?? generatedId;
 
   return (
-    <div>
-      <div>
+    <div className="flex flex-col gap-0.5">
+      <div className={`flex flex-col gap-1 ${classes}`}>
         <label htmlFor={inputId} className="text-blue-300">
           {label}
         </label>
@@ -20,10 +27,16 @@ export const InputField = ({ id, label, errorMessage, ...rest }: Props) => {
           id={inputId}
           autoComplete="off"
           {...rest}
-          className="text-grey border-1"
+          className="text-grey border-b-1 outline-0"
         />
       </div>
-      {errorMessage && <span className="text-error">{errorMessage}</span>}
+      <div className="h-5 flex items-center justify-center">
+        {errorMessage && (
+          <span className="text-error inline-block text-sm">
+            {errorMessage}
+          </span>
+        )}
+      </div>
     </div>
   );
 };

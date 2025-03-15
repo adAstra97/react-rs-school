@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TFormSchema } from '../../utils/FormSchema.zod';
+import { TFormSchema } from '../../utils/form-schema.zod';
 
 export type StoredForm = Omit<TFormSchema, 'picture'> & {
   picture: string;

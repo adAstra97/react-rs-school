@@ -39,7 +39,9 @@ const MainPage = () => {
           ))}
         </ul>
       ) : (
-        <span>No forms found</span>
+        <div className="min-h-[calc(100vh-120px)] flex justify-center items-center">
+          <span className="text-grey text-2xl">No cards found</span>
+        </div>
       )}
     </main>
   );
