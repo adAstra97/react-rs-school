@@ -1,12 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-light: #f9f7f7;
-  --color-grey: #dbe2ef;
-  --color-blue: #3f72af;
-  --color-dark-blue: #112d4e;
-  --color-error: #fd4141;
-  --color-success: #6ee32f;
+  --color-light: #fafafa;
 }
 
 :root {
@@ -21,10 +16,9 @@
 }
 
 html {
-  margin-right: calc(-1 * (100vw - 100%));
   overflow-x: hidden;
 }
 
 body {
-  @apply m-0 min-w-[320px] min-h-screen bg-dark-blue;
+  @apply m-0 min-w-[320px] min-h-screen overflow-x-hidden bg-light;
 }
