@@ -2,6 +2,7 @@
 
 @theme {
   --color-light: #fafafa;
+  --color-hover: #eeeeee;
 }
 
 :root {
