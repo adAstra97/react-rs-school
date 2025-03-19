@@ -7,4 +7,5 @@ export const REGIONS = [
   'Asia',
   'Europe',
   'Oceania',
+  'Antarctic',
 ];

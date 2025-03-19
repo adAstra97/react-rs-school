@@ -3,6 +3,7 @@
 @theme {
   --color-light: #fafafa;
   --color-hover: #eeeeee;
+  --color-grey: #c1c1c1;
 }
 
 :root {
