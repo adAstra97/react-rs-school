@@ -6,10 +6,18 @@ import { useCountries } from '../hooks/useCountries';
 import { RegionFilter } from '../components/RegionFilter';
 import { Search } from '../components/Search';
 import { useState } from 'react';
+import { SortType } from '../utils/types';
+import { Sort } from '../components/Sort';
 
 const MainPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { countries, loading, setSelectedRegion } = useCountries(searchTerm);
+  const [selectedRegion, setSelectedRegion] = useState<string>('');
+  const [sortType, setSortType] = useState<SortType>('name-asc');
+  const { countries, loading } = useCountries({
+    searchTerm,
+    selectedRegion,
+    sortType,
+  });
 
   return (
     <div>
@@ -18,8 +26,9 @@ const MainPage = () => {
         <Container>
           <div className="flex justify-between items-center py-8 flex-wrap">
             <Search value={searchTerm} onChange={setSearchTerm} />
-            <div>
+            <div className="flex gap-2">
               <RegionFilter onSelect={setSelectedRegion} />
+              <Sort onSort={setSortType} />
             </div>
           </div>
           {loading ? <Spinner /> : <CountryList countries={countries} />}

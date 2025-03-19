@@ -9,3 +9,5 @@ export interface Country {
   };
   cca3: string;
 }
+
+export type SortType = 'name-asc' | 'name-desc' | 'pop-asc' | 'pop-desc';
