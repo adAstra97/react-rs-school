@@ -7,7 +7,7 @@ export interface Country {
   flags: {
     png: string;
   };
-  cca3: string;
+  isVisited: boolean;
 }
 
 export type SortType = 'name-asc' | 'name-desc' | 'pop-asc' | 'pop-desc';

@@ -1,8 +1,17 @@
 import { Country } from '../utils/types';
 
-export const CountryItem = ({ item }: { item: Country }) => {
+export const CountryItem = ({
+  item,
+  onCheckedCountry,
+}: {
+  item: Country;
+  onCheckedCountry: (name: string) => void;
+}) => {
   return (
-    <div className="rounded-lg overflow-hidden shadow">
+    <div
+      onClick={() => onCheckedCountry(item.name.common)}
+      className={`rounded-lg overflow-hidden shadow ${item.isVisited && 'shadow-[0_0_4px_6px_#76c3c1fc]'}`}
+    >
       <img
         src={item.flags.png}
         alt={item.name.common}

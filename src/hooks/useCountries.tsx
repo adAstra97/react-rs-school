@@ -6,12 +6,14 @@ interface Props {
   searchTerm: string;
   selectedRegion: string;
   sortType: SortType;
+  visitedCountries: string[];
 }
 
 export const useCountries = ({
   searchTerm,
   selectedRegion,
   sortType,
+  visitedCountries,
 }: Props) => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +41,7 @@ export const useCountries = ({
 
       const matchesSearch = country.name.common
         .toLowerCase()
-        .includes(searchTerm.toLowerCase());
+        .includes(searchTerm.trim().toLowerCase());
 
       return matchesRegion && matchesSearch;
     })
@@ -56,7 +58,11 @@ export const useCountries = ({
         default:
           return 0;
       }
-    });
+    })
+    .map((item) => ({
+      ...item,
+      isVisited: visitedCountries.includes(item.name.common),
+    }));
 
   return { countries: filteredAndSortedCountries, loading };
 };

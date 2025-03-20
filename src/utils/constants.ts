@@ -18,3 +18,5 @@ export const SORT_OPTIONS: { label: string; value: SortType }[] = [
   { label: 'Population (Low to High)', value: 'pop-asc' },
   { label: 'Population (High to Low)', value: 'pop-desc' },
 ];
+
+export const LS_KEY = 'visited-countries-adAstra';
