@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-light: #fafafa;
+  --color-hover: #eeeeee;
+  --color-grey: #c1c1c1;
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  @apply m-0 min-w-[320px] min-h-screen overflow-x-hidden bg-light;
+}
