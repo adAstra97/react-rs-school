@@ -5,7 +5,7 @@ import { Spinner } from '../components/Spinner';
 import { useCountries } from '../hooks/useCountries';
 import { RegionFilter } from '../components/RegionFilter';
 import { Search } from '../components/Search';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SortType } from '../utils/types';
 import { Sort } from '../components/Sort';
 import { LS_KEY } from '../utils/constants';
@@ -29,13 +29,13 @@ const MainPage = () => {
     localStorage.setItem(LS_KEY, JSON.stringify(visitedCountries));
   }, [visitedCountries]);
 
-  const handleVisitedCountries = (name: string) => {
+  const handleVisitedCountries = useCallback((name: string) => {
     setVisitedCountries((prev) =>
       prev.includes(name)
         ? prev.filter((item) => item !== name)
         : [...prev, name]
     );
-  };
+  }, []);
 
   return (
     <div>

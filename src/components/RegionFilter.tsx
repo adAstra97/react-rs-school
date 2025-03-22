@@ -1,20 +1,23 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { REGIONS } from '../utils/constants';
 
 interface Props {
   onSelect: (region: string) => void;
 }
 
-export const RegionFilter = ({ onSelect }: Props) => {
+export const RegionFilter = memo(({ onSelect }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState<string>('');
 
-  const handleSelectRegion = (region: string) => {
-    const selectedRegion = region === 'All regions' ? '' : region;
-    setSelectedRegion(selectedRegion);
-    onSelect(selectedRegion);
-    setIsOpen(!isOpen);
-  };
+  const handleSelectRegion = useCallback(
+    (region: string) => {
+      const selectedRegion = region === 'All regions' ? '' : region;
+      setSelectedRegion(selectedRegion);
+      onSelect(selectedRegion);
+      setIsOpen(!isOpen);
+    },
+    [isOpen, onSelect]
+  );
 
   return (
     <div className="relative">
@@ -40,4 +43,6 @@ export const RegionFilter = ({ onSelect }: Props) => {
       )}
     </div>
   );
-};
+});
+
+RegionFilter.displayName = 'RegionFilter';

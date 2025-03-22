@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { SortType } from '../utils/types';
 import { SORT_OPTIONS } from '../utils/constants';
 
@@ -6,15 +6,18 @@ interface Props {
   onSort: (sort: SortType) => void;
 }
 
-export const Sort = ({ onSort }: Props) => {
+export const Sort = memo(({ onSort }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState<SortType>('name-asc');
 
-  const handleSortChange = (sort: SortType) => {
-    setSelectedSort(sort);
-    onSort(sort);
-    setIsOpen(false);
-  };
+  const handleSortChange = useCallback(
+    (sort: SortType) => {
+      setSelectedSort(sort);
+      onSort(sort);
+      setIsOpen(false);
+    },
+    [onSort]
+  );
 
   return (
     <div className="relative">
@@ -41,4 +44,6 @@ export const Sort = ({ onSort }: Props) => {
       )}
     </div>
   );
-};
+});
+
+Sort.displayName = 'Sort';

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Country, SortType } from '../utils/types';
 import { BASE_URL } from '../utils/constants';
 
@@ -33,36 +33,38 @@ export const useCountries = ({
     fetchCountries();
   }, []);
 
-  const filteredAndSortedCountries = countries
-    .filter((country) => {
-      const matchesRegion = selectedRegion
-        ? country.region === selectedRegion
-        : true;
+  const filteredAndSortedCountries = useMemo(() => {
+    return countries
+      .filter((country) => {
+        const matchesRegion = selectedRegion
+          ? country.region === selectedRegion
+          : true;
 
-      const matchesSearch = country.name.common
-        .toLowerCase()
-        .includes(searchTerm.trim().toLowerCase());
+        const matchesSearch = country.name.common
+          .toLowerCase()
+          .includes(searchTerm.trim().toLowerCase());
 
-      return matchesRegion && matchesSearch;
-    })
-    .sort((a, b) => {
-      switch (sortType) {
-        case 'name-asc':
-          return a.name.common.localeCompare(b.name.common);
-        case 'name-desc':
-          return b.name.common.localeCompare(a.name.common);
-        case 'pop-asc':
-          return a.population - b.population;
-        case 'pop-desc':
-          return b.population - a.population;
-        default:
-          return 0;
-      }
-    })
-    .map((item) => ({
-      ...item,
-      isVisited: visitedCountries.includes(item.name.common),
-    }));
+        return matchesRegion && matchesSearch;
+      })
+      .sort((a, b) => {
+        switch (sortType) {
+          case 'name-asc':
+            return a.name.common.localeCompare(b.name.common);
+          case 'name-desc':
+            return b.name.common.localeCompare(a.name.common);
+          case 'pop-asc':
+            return a.population - b.population;
+          case 'pop-desc':
+            return b.population - a.population;
+          default:
+            return 0;
+        }
+      })
+      .map((item) => ({
+        ...item,
+        isVisited: visitedCountries.includes(item.name.common),
+      }));
+  }, [countries, searchTerm, selectedRegion, sortType, visitedCountries]);
 
   return { countries: filteredAndSortedCountries, loading };
 };

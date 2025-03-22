@@ -1,12 +1,12 @@
+import { memo } from 'react';
 import { Country } from '../utils/types';
 
-export const CountryItem = ({
-  item,
-  onCheckedCountry,
-}: {
+interface Props {
   item: Country;
   onCheckedCountry: (name: string) => void;
-}) => {
+}
+
+const CountryItem = ({ item, onCheckedCountry }: Props) => {
   return (
     <div
       onClick={() => onCheckedCountry(item.name.common)}
@@ -29,3 +29,11 @@ export const CountryItem = ({
     </div>
   );
 };
+
+const areEqual = (prev: Props, next: Props) =>
+  prev.item.name.common === next.item.name.common &&
+  prev.item.isVisited === next.item.isVisited &&
+  prev.item.population === next.item.population &&
+  prev.item.region === next.item.region;
+
+export default memo(CountryItem, areEqual);
